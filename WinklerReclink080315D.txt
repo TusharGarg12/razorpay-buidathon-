@@ -1,0 +1,300 @@
+Record Linkage
+William E. Winkler
+Introduction
+Record linkage consists of methods for matching duplicates within or across files using non-unique identifiers such as first name, last name, date-of-birth, address, and other characteristics.  Fields such as first name, last name, date-of-birth, and address are referred to as quasi-identifiers.  In combination, quasi-identifiers may uniquely identify an individual.  Modern computerized record linkage began with methods introduced by geneticist Howard Newcombe (Newcombe et al. 1959; Newcombe and Kennedy 1962) who used odds ratios (likelihood ratios) and value-specific (common value of last name 
+has less distinguishing power than rare value 
+Zabrinsky
+Ivan Fellegi and Alan Sunter (Fellegi and Sunter 1969, hereafter FS) gave a mathematical formalization of Newcombe
+s ideas.  They proved the optimality of the decision (classification) rule of Newcombe and introduced many ideas about estimating optimal parameters (probabilities used in the likelihood ratios) without training data.
+In this chapter, we will give background on the model of Fellegi and Sunter and several of the practical methods that are necessary for dealing with (often exceptionally) messy data.  Although the methods rely on statistical models, most development has been done by computer scientists using machine learning or database methods (Winkler 2006a).  Computer scientists refer to record linkage as entity resolution, object identification, or a number of other terms.  
+Applications of record linkage are numerous.  In some situations, we might use a collection of lists to create a large list (survey frame) or update an existing large list.  The updating and list maintenance can assure that we have good coverage of a desired population.  The largest applications of record linkage are often during a population census or in updating an administrative list such as a national health directory or death index.  Large typographical variation or error in fields such as first name, last name, and date-of-birth in a moderate proportion of records can make the updating quite difficult.  Historically, some agencies have a full time staff devoted to cleaning up the lists (primarily manually).  If they did not, then 1-3
+error or more might enter the lists every year.  The computerized record linkage methods can significantly reduce the need for clerical review and clean-up.
+Another application of record linkage might be the matching of one list with another list in order to estimate the undercoverage/overcoverage of one of the lists that is believed to be reasonably complete.  For the U.S. Census (Winkler 1995), a large number of census blocks (contiguous regions of approximately 70 households) were re-enumerated and matched against the main list of individuals.  The computerized procedures reduced clerical review from an estimated 3000 individuals for six months to 300 individuals for six weeks.  Because of the high quality of the lists and associated skills of individuals, false match rates of the computerized procedures were approximately 0.2
+More than 85
+of matches were found automatically with the remainder of matches easily located among potentially matching individuals in the same household.  The potentially matching individuals were often missing both first name and age.
+Other applications of record linkage might involve re-identification experiments in which a public-use file only contains fields needed for demographic or economic analyses.  Such fields might include a geocode, sex, age or age range, education level, and income level.  Agencies release anonymized or masked data so that additional statistical analyses can be performed but do not wish 
+intruders
+to re-identify individuals or data associated with individuals by placing names with individual records.  Sweeney (1997) showed that 77
+of individuals can be uniquely identified by ZIP code, sex, and date-of-birth that are readily available in public lists such as voter registration databases.  Until Sweeney
+s work many public-use health files contained ZIP code, sex, and date-of-birth.   Winkler (1998), Sweeney (1999), and Evfimievksi (2004) showed how to re-identify using a combination of analytic properties and record linkage.  We do not cover re-identification in this chapter.
+Record linkage can both increase the amount of coverage and reduce the amount of duplication in a survey frame.  Frame errors can severely bias sampling and estimation.  It is nearly impossible to correct errors in estimates that are based on sampling from a frame with moderate error (Deming and Gleser 1959).  After applying sophisticated record linkage, the 1992 Census of Agriculture (Winkler 1995) contained 2
+duplication whereas the 1987 Census of Agriculture contained 10
+duplication.  The duplication rates are based on field validation.  Some estimates from the 1987 Agriculture Census with 10
+duplication error may have been substantially biased.
+The outline of this chapter is as follows.  In the second section following this introduction we give background on the record linkage model of Fellegi and Sunter (1969), methods of parameter estimation without training data, string comparators for dealing with typographical error, an empirical example, and some brief comments on training data.  The third section provides details of the difficulties with the preparation of messy data for linkage.  Traditionally, file preparation has yielded greater improvements in matching efficacy than any other improvements.  In the fourth section, we describe methods for error rate estimation without training data, methods for adjusting statistical analyses of merged files for linkage error, and techniques for speeding up record linkage.  The final section consists of concluding remarks.
+Overview of Methods
+In this section, we provide summaries of certain ideas of record linkage.  Although the ideas are based on statistical models, the messiness of the data and the difficulty of developing certain algorithms for estimation and comparison have limited statistical agencies ability to create generalized computer systems that can be used in a variety of their applications.   
+The Fellegi-Sunter model of record linkage
+Fellegi and Sunter (1969) provided a formal mathematical model for ideas that had been introduced by Newcombe (1959, 1962).  They provided many ways of estimating key parameters.  The methods have been rediscovered in the computer science literature (Cooper and Maron 1978) but without proofs of optimality.  To begin, notation is needed.  Two files A and B are matched.  The idea is to classify pairs in a product space A ( B from two files A and B into M, the set of true matches, and U, the set of true nonmatches.  Fellegi and Sunter, making rigorous concepts introduced by Newcombe (1959), considered ratios of probabilities of the form:
+cur.  The ratio R or any monotonely increasing function of it such as the natural log is referred to as a matching weight (or score).
+The decision rule is given by:
+T(, then designate pair as a match.
+If T( ( R ( T(, then designate pair as a possible match
+and hold for clerical review.                                                                               (14.2)
+T(, then designate pair as a nonmatch.
+The cutoff thresholds T( and T( are determined by a priori err
+In some situations, resources are available to review pairs clerically.
+Figure 1 provides an illustration of the curves of log frequency versus log weight for matches and nonmatches, respectively.  The two vertical lines represent the lower and upper cutoffs thresholds T( and T(, respectively.  The x-axis is the log of the likelihood ratio R given by (14.1).  The y-axis is the log of the frequency counts of the pairs associated with the given likelihood ratio.  The plot uses pairs of records from a contiguous geographic region that was matched in the 1990 Decennial Census.  The clerical review region between the two cutoffs primarily consists of pairs within the same household that are missing both first name and age.
+Table 14.1 provides examples of pairs of records that might be matched using name, address, and age.  The pairs give the first indication that matching that might be straightforward for a suitably skilled person might not be easy with na
+ve rules based on (14.1) and (14.2).   If 
+two pairs may be the same but unlikely to put a suitable score (or matching weight) on the first two pairs.  The third pair must be taken in context.  If the first record in the pair were individuals in medical school at the University of Michigan 20 years ago and the second record is from a current list of physicians in Detroit, Michigan, then, after suitable follow-up, we might determine that the third pair is a match.
+Table 14.1. Elementary examples of matching pairs 
+of records (dependent on context)
+Name              Address                Age
+John A Smith         16 Main Street             16
+J H Smith            16 Main St                 17
+Javier Martinez      49 E Applecross Road       33
+Haveir Marteenez     49 Aplecross Raod          36
+Gillian Jones        645 Reading Aev            24
+Jilliam Brown
+Norcross Blvd      
+If we had computerized parsing algori
+thms for comparing fields (e.g. Javier versus Haveir) having typographical error, then we might be to give partial agreement to minor typographical error rather than call a comparison a disagreement.  Additionally, we might want standardization routines the replace commonly occurring words with a common spelling (
+in pair two; 
+in pair three).
+Learning parameters 
+Early record linkage systems were often for large administrative lists such as a national health index.  The typical fields were name, address, date-of-birth, city of birth, and various fields associated with health information.   The main administrative list might be cleaned-up in the sense that many components of the name, address, and other fields were reviewed and changed manually.  As time progressed, the easiest of the manual procedures were replaced by computerized procedures that mimicked the manual procedures.  For instance, it is straightforward to convert nicknames to possible legal names (
+or obvious spelling errors (
+using lookup tables from prior manual review.
+In virtually all real-world situations of which we are aware, training data have been unavailable.  Practitioners have developed a number of ways for learning 
+record linkage parameters without training data.  In all but one of the following subsections, we will describe methods of unsupervised learning where training data are unavailable.   
+Ideas of Newcombe
+s ideas (1959, 1962) are based on odds-ratios that are effectively likelihood ratios.  He began with a large administrative list representing an entire population.  The list had been cleaned up in the sense that duplicates were removed and inconsistent spelling or formatting were eliminated.  Let file C 
+odds (conditional probabilities) that he developed from matching C against itself.  Let 
+EMBED Equation.3  
+represent agreement on field i, 
+EMBED Equation.3  
+represent disagreement on field i, and 
+EMBED Equation.3  
+represent agreement or disagreement on field i but not both.  Newcombe
+s first simplifying assumption is the conditional independence assumption that conditional on being in the set of matches M or nonmatches U agreement on field i is independent of agreement on field j.  
+EMBED Equation.3  
+where D is either M or U.  Under condition (CI), Newcombe then computed the odds associated with each value of a specific field.  The intuition is to bring together pairs on common values of individual fields.  For instance, with last name we might consider pairs agreeing on 
+Zabrinsky
+ches U, there are fij ( fij 
+fij pairs that agree on the jth value of the ith field.  Then the odds ratio of agreement on the jth value of the ith field is
+P(agree jth value of  ith field 
+M) / P(agree jth value of ith field 
+U)        (14.4)
+fij / N) / (fij ( fij 
+fij )/(N ( N 
+If pairs are taken from two files (i.e., product space of A ( B), then we can use fij as the frequency in A, gij as the frequency in B, hij as the frequency in A(B (that is usually approximated with hij 
+min(fij, gij), and make the appropriate changes in (14.4).
+We notice that the sum of the probabilities of the numerator in equation (14.4) sum to 1.  In practice, we assume that the sum of the probabilities is 1-( where (
+and multiply all of the numerators in equation (14.4) by 1-(.  This allows a small probability of disagreement (
+and P(A1 
+The values of the (
+were chosen via experience.  In some situations there was clerical review on a subset of pairs and the P(A1 
+M) were re-estimated.  Although the re-estimation (possibly after several iterations) was cumbersome, it did work well in practice.
+Newcombe and others had observed the probabilities in the denominator could be approximated by random agreement probabilities
+EMBED Equation.3  
+Formula (14.5) is a reasonable approximation when the set of matches M is not known.  There are equivalent random agreement probabilities in the case of A ( B.  
+There were only a few methods for dealing with typographical error.  On receipt and keying of data, certain obvious misspelling (
+might be changed by an analyst.  Previously determined typographical variations might be placed in lookup tables that could be used for replace one spelling with another.  The intent in all situations was to increase the proportion of matches that were found.  
+The methods of Fellegi and Sunter
+Fellegi and Sunter (1969, T
+hat differ from the situations of Newcombe in the previous section.  As the methods are useful, we describe what they introduced and then show how the ideas led into more general methods that can be used for unsupervised learning (i.e., without training data) in a large number of situations.
+Fellegi and Sunter observed several things.  First,
+EMBED Equation.3  
+for any set A of pairs in A ( B.  The probability on the left can be computed directly from the set of pairs.  If sets A represent simple agreement/disagreement, under condition (CI), we obtain 
+EMBED Equation.3  
+then (14.6) and (14.7) provide seven equations and seven unknowns (as x represent agree or disagree) that yield quadratic equations that they solved.  Here D is either M or U.  Equation (or set of equations) (14.7) is essentially the same as equation (14.3) and can be expanded to K fields.  Although there are eight patterns associated with the equations of the form (14.7), we eliminate one because the probabilities must add to one.  In general, with more fields but still simple agreement/disagreement between fields, the equations can be solved via the EM algorithm in the next section.  Probabilities of the form P(Ai 
+D) are referred to as m-probabilities if D
+M and u-probabilities if D
+Fellegi and Sunter provided more general methods for frequency-based matching (value-specific) matching than those of Newcombe
+rst field, then 
+EMBED Equation.3  
+where D is either M or U.  Typically, P(Ai 
+for the simple agree/disagree weights on field i.  This reflects the fact that there less than 100
+agreement on the ith field.  Superficially, we can think of the 1 - P(Ai 
+M) as the average 
+typographical error
+rate in the ith field.  To make equation (14.8) valid under certain restrictions, FS assumed that the typographical error ra
+e have greatly simplified) are given in their papers (FS, Winkler 1989b).
+There are a number of implicit assumptions that are often made when matching two files and computing probabilities using (14.6), (14.7), and (14.8).  The first is that there is significant overlap between two files A and B.  This essentially means that 
+EMBED Equation.3  
+is either most of A or most of B.  If this assumption is not true, then the probabilities obtained via Newcombe
+s methods or the FS methods may not work well.  The second assumption is that neither file A or B can simultaneously be samples from two larger files A2 and B2.  Deming and Gleser (1959) provided theory demonstrating the unreliability of determining the sampling overlap (i.e., number of duplicates) from two sample files.  As a case in point, if A2 
+B2 each contain 1000 records on which 1
+have the last name of 
+among the matches M between A2 and B2, there is a 1
+probability of being a pair agreeing on 
+actually being a match.  If A and B are 10
+samples of A2 and B2, respectively, then among matches between A and B, there is a 0.1
+probability of a pair agreeing on 
+actually being a match.  The third assumption is that the typographical error rates are quite low so the frequency-based computations based on the different observed values of the fields are valid.  If a relatively rare value of last name such as 
+Zabrinsky
+has six different spellings in the six records in which it appeared, then it is not possible to compute accurate frequency-based probabilities directly from the file.
+In practice, it is necessary to perform blocking of two files that effect how pairs are brought together.  If two files A and B each contain 10,000 records, then there are 108 pairs in the product A ( B.  Until very recently, we could not do the computation of 108 pairs.  In blocking, we only consider pairs that agree on certain characteristics.  For instance, we may only consider pairs that agree on first initial of first name, last name, and date-of-birth.  If we believe (possibly based on prior experience) that we are not getting a sufficiently large proportion of matches with a first blocking criteria, we may try a second.  For instance, we may only consider pairs that agree on first initial of first name, first initial of last name, and the ZIP
+code (that represents approximately 50 households).  FS gave the straightforward theoretical extensions for blocking.  In performing computation over pairs P1 in A ( B obtained via blocking, there is a fourth implicit assumption: that the pairs in P1 contain a moderately high proportion of matches (say 3
+of P1 consists of matches).  In the next section, we return to the minimal needed proportion of pairs needing to be matches in more general situations.  The methods of obtaining the probabilities given by (14.6), (14.7), and (14.8) break down when the proportion of matches from M in the set of pairs P1 is too low.  The computations also break down if we do the computation over all 108 pairs in A ( B.  In A ( B, at most 0.01
+of the pairs are matches.  In the next section, we will show how we can effectively find reasonable probabilities in a variety of situations.
+EM Algorithm
+In this section, we do not go into much detail about the basic EM algorithm because the basic algorithm is well understood.  We provide a moderate amount of detail for the record linkage application so that we can describe a number of the limitations of the EM and some of the extensions.
+For each 
+uation such as methods of moments and least squares, the EM is greatly preferred because of its numeric stability.  Under conditional independence, programming is simplified and computation is greatly reduced (from 2k to 2k).   
+Caution must be observed when applying the EM algorithm to real data.  The EM algorithm that has been applied to record linkage is a latent class algorithm that is intended to divide A ( B into the desired sets of pairs M and U.  The probability of a class indicator that determines whether a pair is in M or U is the missing data must be estimated along with the m- and u-probabilities.  It may be necessary to apply the EM algorithm to a particular subset S of pairs in A ( B in which most of the matches M are concentrated,  for which the fields used for matching clearly can separate M from U, and for which suitable initial probabilities can be chosen.  Because the EM is a local maximization algorithm, the starting probabilities may need to be chosen with care based on experience with similar types of files.  Because the EM latent-class algorithm is a general clustering algorithm, there is no assurance that the algorithm will divide A ( B into two classes C1 and C2 that almost precisely correspond to M and U.
+The following example characterizes some of the cautions that must be observed when applying the EM.  As we will observe, the EM, when properly applied, can supply final limiting parameters that are quite effective.  In extensive Decennial Census work, we observed that the final limiting parameters often reduced the size of the clerical review region by 2/3 from the region that might have been obtained by the initial parameters obtained from knowledgeable guesses.  In the following we use 1988 Dress Rehearsal Census data from one of the 457 regions of the U.S. that we used for the 1990 Decennial Census.  The matching fields consist of last name, first name, house number, street name, phone, age, and sex.  In actuality, we also used middle initial, unit (apartment identifier), and marital status.  The first file A is a sample of blocks from the region and the second file is an independent enumeration of the same sample of blocks.  The first file size is 15,048 and the second file size is 12,072.  In the first part of the example, we only consider 116,305 pairs that agree on Census block id and first character of surname and, in the second part, we only consider the 1,354,457 pairs that agree on Census block id only.  A census block consists of approximately 70 households whereas a ZIP
+area represents approximately 50 households.  We observe that there can be at most 12,072 matches if the smaller file is an exact subset of the larger file.  As is typical in population censuses, the work begins with address lists of households in which the data from the survey forms are used to fill-in information associated with individuals.  In many situations (such as with families), there will be more than one individual associated with each address (housing unit). 
+We begin by applying the (2-class) EM to the set of 110,305 pairs.  We use knowledgeable initial probabilities that we believe correspond to the probabilities we need for matching individuals.  We also use a precursor program to get the counts (or probabilities) of the form P(() that we use in the EM algorithm.  In the limit, we get the final probabilities given in Table 14.2.  The final proportion of matches in the first class P(M) 
+is much too large.  The m-probability P(agree first 
+is much too small.  What has gone wrong
+We observe that addresses are of high quality.  Because we are in very small contiguous regions (blocks), last name, house number, street name, and phone are likely to be the same in most housing units associated with families.  The higher quality household information outweighs the person fields of first name, age, and sex that might be used to separate individuals within household.  
+Table 14.2.  Initial and Final Probabilities from 
+class EM Fitting
+Initial                Final
+m         u            m        u
+Last      0.98  0.24   0.95  0.07
+First     0.98  0.04   0.31  0.01
+Hsnm      0.94  0.24   0.98  0.03
+Stnm      0.66  0.33   0.99  0.47
+Phone     0.70  0.14   0.68  0.01
+Age       0.88  0.11   0.38  0.07
+Sex       0.98  0.47   0.61  0.49
+We overcome the situation by creating a 3-class EM that we hope divides records agreeing on household variables into 2-classes and leaves a third class that would be nonmatches outside of households.  The initial ideas were due to Smith and Newcombe (1975) who provided separate ad hoc weighting (likelihood) adjustments for the set of person fields and the set of household fields.  Their ideas have been verified by Gill (1999) among others.  As the EM algorithm is quite straightforward to convert to 3-classes, we make the appropriate algorithmic adjustments and choose appropriate starting probabilities.  Winkler (1993b) provides details.  Table 14.3 gives initial probabilities for a first class that we hope corresponds to person matches M within a household, an in-between class I that we hope corresponds to nonmatches within the same household, and a class Oh that are pairs not agreeing on household fields.  To get the final u-probabilities we combine the i-probabilities and oh-probabilities according to the proportions in classes 2 and 3.  When we run the EM program, we get probabilities of being in the three classes of 0.0846, 0.1958, and 0.7196, respectively.  The probability 0.0846 associated with the first class accurately corresponds to the known number of true matches (obtained via two levels of review and one level of adjudication).  Notice that the starting i-probabilities are reasonable guesses for the probabilities of persons within the same household who are not matches.
+Table 14.3.  Initial and Final Probabilities from 
+class EM Fitting
+Initial                                          Final
+m          i        oh                m        i         oh
+Last      0.98  0.90  0.24    0.96  0.92  0.07  0.25
+First     0.98  0.24  0.04    0.96  0.02  0.01  0.01
+Hsnm      0.94  0.90  0.24    0.97  0.97  0.04  0.23 
+Stnm      0.66  0.90  0.33    0.98  0.99  0.47  0.58
+Phone     0.70  0.60  0.14    0.72  0.64  0.01  0.14 
+Age       0.88  0.20  0.11    0.88  0.14  0.07  0.08
+Sex       0.98  0.70  0.47    0.98  0.45  0.49  0.49 
+If we apply the 3-class EM algorithm to the 1,354,457 pairs agreeing on block (but not block plus first character of last name) and use good initial guesses for the probabilities, then we get similarly 
+m-probabilities as we did in Table 14.3.  This is true even though the estimated proportion of pairs in the first class is 0.0081.  In general, when we begin with sets of pairs that are much too large, the EM algorithm will not converge to estimates that are not reasonable for separating matches from the other pairs.  The EM algorithm when applied to the much larger set of pairs can be much more sensitive to the set of starting points. 
+If the EM algorithm is applied with care, then it will generally yield good parameter estimates with lists of individuals.  It will not always yield reasonable lists with agriculture or business lists because of the (moderately) high proportion of truly matching pairs that disagree on names or on addresses.  The EM algorithm was used for production matching in the 1990 Decennial Census (Winkler and Thibaudeau 1991) because Winkler (1989a) had been able to demonstrate that matching probabilities (particularly  m-probabilities) varied significantly (say between a suburban area and an adjacent urban area).  If we think of 1 - P(Ai 
+M) as crudely representing the average typographical error in the ith field, then the variation of parameters is understandable because lists associated with urban areas often contain more typographical error.
+Winkler (1988, 1989a) showed the EM algorithm yielded 
+optimal parameters
+in the sense of effective local maxima of the likelihood.  The 2-class and 3-class EM algorithms under condition (CI) are quite robust.  If starting points are varied substantially, the EM converges to the same limiting values where the limiting values are determined by characteristics of the files A and B.  The 2-class algorithm will outperform the 3-class algorithm in situations where there is typically only one entity at an address (or telephone number).  In those situations, the address can be considered an identifier of the individual entity.
+During 1990 production matching, the EM algorithm showed its flexibility.  In three regions among a number of regions processed in one week, clerical review became much larger with the EM parameters than was expected.  Upon quick review, we discovered that two keypunchers had managed to bypass edits on the year of birth.  All records from these keypunchers disagreed on the computed age.  The clerical review became much larger because first name and the age were the main fields for separating persons within a household.  
+More generally we may wish to account for dependencies directly by using appropriate loglinear models (Bishop, Fienberg, and Holland 1975).  Winkler (1993b) provides a general EMH algorithm that accounts for the general interactions between fields and allows convex constraints to predispose certain estimated probabilities into regions based on a priori information used in similar matching projects.  The EMH algorithm is a form of MCECM algorithm (Meng and Rubin 1993) that additionally allows convex constraints.  The interaction EM can yield parameters that yield slight improvements in matching efficacy.  It is much more difficult to apply because of its sensitivity to moderate changes in the set of interactions.  Winkler (1993b) and Larsen and Rubin (2001) demonstrated that effective sets of interactions can be selected based on experience.  The starting point for the interaction EM is the set of parameters from the conditional independence EM.
+String comparators
+In most matching situations, we will get poor matching performance when we compare two strings exactly (character-by-character) because of typographical error.  Dealing with typographical error via approximate string comparison has been a major research project in computer science (see e.g., Hall and Dowling 1980, Navarro 2001).  In record linkage, we need to have a function that represents approximate agreement, with agreement being represented by 1 and degrees of partial agreement being represented by numbers between 0 and 1.  We also need to adjust the likelihood ratios (14.1) according to the partial agreement values.  Having such methods is crucial to matching.  For instance, in a major census application for measuring undercount, more than 25
+of matches would not have been found via exact character-by-character matching.   Three geographic regions (St. Louis 
+urban, Columbia, MO 
+suburban, and Washington 
+suburban/rural) are considered in Table 14.4.  The function ( represents exact agreement when it takes value one and represents partial agreement when it takes values less than one.  In the St Louis region, for instance, 25
+of first names and 15
+of last names did not agree character-by-character among pairs that are matches.
+Jaro (1989) introduced a string comparator that accounts for insertions, deletions, and transpositions.  The basic Jaro algorithm has three components: (1) compute the string lengths, (2) find the number of common characters in the two strings, and (3) find the number of transpositions.  The definition of common is that the agreeing character must be within half the length of the shorter string.  The definition of transposition is that the character from one string is out of order with the corresponding common character from the other string.  The string comparator value (rescaled for consistency with the practice in computer science) is:
+f s1 and s2, and Nt is the number of transpositions.  The number of transpositions Nt is computed somewhat differently from the obvious manner.
+Table 14.4.  Proportional agreement  
+by string comparator values
+among matches
+Key fields by geography
+StL      Col     Wash
+Winkler variant employs some ideas of Pollock and Zamora (1984) in a large study for the Chemical Abstracts Service.  They provided empirical evidence that quantified how the probability of keypunch errors increased as the character position in a string moved from the left to the right.  The Winkler variant, referred to as the Jaro-Winkler string comparator, is widely used in computer science. 
+Work by Cohen et al. (2003a,b) provides empirical evidence that the new string comparators can perform favorably in comparison to Bigrams and Edit Distance.  Edit Distance uses dynamic programming to determine the minimum number of insertions, deletions, and substitutions to get from one string to another.  The Bigram metric counts the number of consecutive pairs of characters that agree between two strings.  A generalization of bigrams is q-grams where q can be greater than 2.  Cohen et al. (2003a,b) provided additional string comparators that they demonstrated slightly outperformed the Jaro-Winkler string comparator with several small test decks but not with a test deck similar to Census data.  Yancey (2005), in a rather exhaustive study, also demonstrated Jaro-Winkler string comparator outperformed new string comparators of Cohen et al. (2003a,b) with large census test decks.  Yancey introduced several hybrid string comparators that used both the Jaro-Winkler string comparator and variants of edit distance.
+Cohen et al. (2003a,b) observed that the computational algorithm for edit distance is ten times as slow as the corresponding algorithm for the Jaro-Winkler string comparator.  The speed of the string comparator dramatically affects the speed of matching software.  It is fairly typical for matching software with the Jaro-Winkler string comparator to expend 30-70
+of the CPU cycles in the string comparator subroutine.
+Table 14.5 compares the values of the Jaro, Winkler, Bigram, and Edit-Distance values for selected first names and last names.  Bigram and Edit Distance are normalized to be between 0 and 1.  All string comparators take value 1 when the strings agree character-by-character.  
+Table 14.5.  Comparison of string comparators using
+last names and first names
+Two strings                 String comparator 
+Jaro  Winkler Bigram  Edit
+SHACKLEFORD   SHACKELFORD    0.970  0.982  0.800  0.818
+DUNNINGHAM    CUNNIGHAM      0.867  0.867  0.917  0.889
+NICHLESON     NICHULSON      0.926  0.956  0.667  0.889
+JONES         JOHNSON        0.867  0.893  0.167  0.667
+MASSEY        MASSIE         0.889  0.933  0.600  0.667
+ABROMS        ABRAMS         0.889  0.922  0.600  0.833
+HARDIN        MARTINEZ       0.778  0.778  0.286  0.143
+ITMAN         SMITH          0.467  0.467  0.200  0.000
+JERALDINE     GERALDINE      0.926  0.926  0.875  0.889
+MARHTA        MARTHA         0.944  0.961  0.400  0.667
+MICHELLE      MICHAEL        0.833  0.900  0.500  0.625
+JULIES        JULIUS         0.889  0.933  0.800  0.833
+TANYA         TONYA          0.867  0.880  0.500  0.800
+DWAYNE        DUANE          0.778  0.800  0.200  0.500
+SEAN          SUSAN          0.667  0.667  0.200  0.400
+JON           JOHN           0.778  0.822  0.333  0.750
+JON           JAN            0.778  0.800  0.000  0.667
+An empirical example
+In the following, we compare different matching procedures on the data that were used for the initial EM analyses (Tables 14.2 and 14.3).  Although we also demonstrated very similar results with several alternative pairs of files, we do not present the additional results here (see Winkler 1990).  The results are based only on pairs that agree on block identification code and first character of the last name.  
+The procedures that we use are as follows.  The simplest procedure, crude, merely uses an ad hoc (but knowledgeable) guess for matching parameters and does not use string comparators.  The next, param, does not use string comparators but does estimate the m- and u-probabilities.  Such probabilities are estimated through an iterative procedure that involves manual review of matching results and successive re-use of re-estimated parameters.  Such iterative-refinement procedures are a feature of Statistics Canada
+s CANLINK system.
+The third type, param2, uses the same probabilities as param and the basic Jaro string comparator.   The fourth type, em, uses the EM algorithm for estimating parameters and the Jaro string comparator.  The fifth type, em2, uses the EM algorithm for estimating parameters and the Winkler variant of the string comparator that performs an upward adjustment based on the amount of agreement in the first four characters in the string.  
+In Table 14.6, the cutoff between designated matches is determined by a 0.002 false match rate.  The crude and param types are allowed to rise slightly above the 0.002 level because they generally have higher error levels.  In each pair of columns (designated matches and designated clerical pairs), we break out the counts into true matches and true nonmatches.  In the designated matches, true nonmatches are false matches.
+Table 14.6.  Matching Results via Matching Strategies
+False Matches among Designated Matches
+designated                 designated 
+computer match        clerical pair
+Truth        match
+nonmatch         match
+crude         310/  1          9344/794
+param        7899/ 16          1863/198
+param2       9276/ 23           545/191  
+em           9587/ 23           271/192
+em2          9639/ 24           215/189
+By examining the table, we observe that a dramatic improvement in matches can occur when string comparators are first used (from param to param2).  The reason is that disagreements (on a character-by-character basis) are replaced by partial agreements and adjustment of the likelihood ratios (see Winkler 1990).  The improvement due to the Winkler variant of the string comparator (from em to em2) is quite minor.  The param method is essentially the same as a traditional method used by Statistics Canada.  After a review of nine string comparator methods (Budzinsky 1991), Statistics Canada provided options for three string comparators in CANLINK software with the Jaro-Winkler comparator being the default.
+The improvement between param2 and em2 is not quite as dramatic because it is much more difficult to show improvements among 
+hard-to-match
+pairs and because of the differences in the parameter-estimation methods.  Iterative refinement is used for param2 (a standard method in CANLINK software) in which pairs are reviewed, reclassified, and parameters re-estimated.  This method is a type of (partially) supervised learning and is time-consuming.
+The improvement due to the parameters from em2 can be explained because the parameters are slightly more general than those obtained under conditional independence.  If 
+EMBED Equation.3  
+represents agreement or disagreement on the ith field, then our conditional independence assumption yields
+EMBED Equation.3  
+where D is either M or U.  Superficially, the EM considers different orderings of the form
+EMBED Equation.3  
+where (,i represents the ith entry in a permutation ( of the integers 1 thru k.  The greater generality of (14.11) in comparison to (14.10) can yield better fits to the data.  We can reasonably assume that the EM algorithm under the conditional independence assumption (as the actual computational methods work) simultaneously chooses the best permutation ( and the best parameters.
+In this section, we have demonstrated that very dramatic improvement in record linkage efficacy through advancing from seemingly reasonable ad hoc procedures to procedures that use modern computerized record linkage procedures.  The issue that affects statistical agencies is whether their survey frames are well-maintained using effective procedures.  Upgrading matching procedures is often as straightforward as replacing a subroutine that uses ad hoc methods with another subroutine.  It is crucial to never assume that moderately sophisticated record linkage procedures are being used as the following situation demonstrates.
+Maintenance of state voter registration lists is a situation where efficacy could be enhanced by moving from ad hoc to modern record linkage procedures.  There have been two U.S. Federal laws (in 1993 and 2002) allocating money and mandating requirements on list maintenance.  The voter registration lists are compared to department of motor vehicle lists, social services lists, and other lists including the main U.S. Social Security Administration list.  Each list is searched internally for duplicates.  All the states (Levitt et al. 2005) appear to be using ad hoc matching procedures that were originally developed for matching department of motor vehicle lists.  The efficacy of the state ad hoc computer matching procedures in many situations may be between the worst two methods (crude and param) in Table 9.  
+Training data
+Representative training data are seldom available for getting the parameters for record linkage classification rules.  If training data are available, then it is possible to get the parameters by adding appropriate quantities to yield the probabilities in (14.1) and (14.2).  In fact, with sufficient training data, it is straightforward to estimate probabilities in (14.1) that account for the dependencies between different matching fields and to estimate error rates.  
+Winkler (1989a) showed that optimal record linkage parameters vary significantly in different geographic regions.  For the 1990 U.S. Decennial Census, training data would have been needed for the 457 regions where matching was performed.  The amount of time needed to obtain the training data in the 457 regions would have substantially exceeded the three weeks that was allotted for the computer matching.  In more than twenty years of record linkage at the Census Bureau, there have never been training data.  In more than thirty years in maintaining the National Health Files and performing other large matching projects at Oxford University, Gill (2000, private communication) never had training data.
+Data Preparation
+In matching projects, putting the data from two files A and B into consistent forms so that the data can be run through record linkage software often requires more work (3-12 months with a moderate or large staff) than the actual matching operations (1-3 weeks with one individual).   Inability or lack of time and resources for cleaning up files in preparation of matching are often the main reasons that matching projects fail.  We provide details of file acquisition, preparation, and standardization in the next sections.
+Description of a matching project
+Constructing a frame or administrative list entities for an entire country or a large region of a country involves many steps.  The construction methods also hold pairs of lists or for the situation of finding duplicates within a given list.
+Identify existing lists that can be used in creating the main list.  In this situation, it is important to concentrate on ten or fewer lists.  It is practically infeasible to consider thousands of lists.
+With each list, obtain an annotated layout.  The annotation should include the locations of different fields and the potential values that different fields can assume.  For instance, a given list may have several status codes associated with whether the entity is still in business or alive.  With lists of businesses, it may have additional status codes denoted whether the record is associated with another entity as a subsidiary or duplicate.  If the annotated layout is not available, then reject the list.  If the list is on an incompatible computer system or in an incompatible format such as a typed list or microfiche, then reject the list.
+Obtain the lists to begin putting them in a standard format that will be used by the duplicate-detection and updating programs.  If the list will not pass through name and address standardization programs, then reject it.  If some or many records in the list cannot be standardized, then consider rejecting the list or only use records that can be standardized.  The standard format should include a field for the source of a list and the date of the list.  If possible, it is a good idea to also have a date for the individual record in the list.  
+If resources permit, greater accuracy may be obtained by matching each potential update source against the main list sequentially.  Matching each list in a sequential manner allows more accurate clerical clean-up of duplicates.  If the clerical clean-up cannot be done in an efficient manner, then duplicates in the main list will yield more and more additional duplicates as the main list is successively updated.  If it appears that an individual list is causing too many duplicates to be erroneously added to the main list, then reject the list as an update source.  If a large subset of the update source does not yield a sufficiently large number of new entities in the main list, then it might also be excluded. 
+After the initial matching, additional computerized and clerical procedures should be systematically applied for further identifying duplicates in the main list.  A very useful procedure is to assure that the representations of names and addresses associated with an entity are in the most useful form and free of typographical errors.  These extra improvement procedures should be used continuously.  If updates and clean-ups of lists containing many small businesses are only done annually, then the overall quality of the list can deteriorate in an additive fashion during each subsequent update.  In the U.S., it is known that the yearly turnover (going in and out of business or substantial changes in name and address information that make updating very difficult) can exceed 10
+with small businesses.
+Many matching projects fail because groups cannot even get through the first 1-2 steps above.  Maintaining lists can be difficult.  In the U.S., the Postal Change of Address files for individuals represent 16
+of the population per year.  Some individuals may move more than once.  With lists of small business (such as petroleum retailers), the change of name or address can exceed 10
+per year.  In maintaining a large national health file or national death index, 1-3
+net error per year can yield substantial error after several years.
+Initial file preparation
+In obtaining the files, the first issue is to determine whether the files reside in sequential (standard flat) files, databases, or in SAS files.  As most record linkage software is designed for only sequential files, files in other formats will need to have copies that are in sequential formats.  Some groups that do record linkage with many files will have a standard format and procedures so that the files are in the most compatible form for record linkage.  An annotated layout will give the descriptions of individual fields that might be compared.  For instance, a sex code might be broken out into Sex1 (male
+M, female
+F, missing
+b where b represents blank) or Sex2 (male
+Simple programs can have tables that are used in converting from one set of codes to another set of codes.
+It is very typical for well-maintained files to carry status codes indicating whether an entity is still alive or in business and whether information such as an address or telephone number is current.  If a file has status codes indicating that certain records are out-of-scope, then in most matching applications the out-of-scope records should be dropped before using the file for updating or merging.  In some files, it may be difficult to determine out-of-scopes.  For instance, electric utilities have very good address information that individuals might wish to use in updating a list of residences.  Unfortunately, electric utilities typically include small commercial establishments with residential customers because they maintain their lists by flow-rate categories.  If the electric utility list is used to update a list of households, many 
+out-of-scope
+commercial addresses will be added.
+It may be necessary to review various fields across two files.  For instance, if one file has addresses that are almost entirely of the form house-number-street-name and another file has a substantial portion of the addresses in the form PO Box, then it may be difficult to match to two files using name and address information.  With lists of businesses, it may be necessary to have auxiliary information that allows separating headquarters from subsidiaries.  With many businesses, headquarters fill out survey forms.  If a survey form is sent to the subsidiary and returned, then the survey organization may double-count the information from the subsidiary that is also reported in the totals from the headquarters.
+In the following, we provide summaries of various procedures that can be used for the preliminary cleaning of files and can often be in straightforward computer routines.  These consistency checks and clean-up procedures prior to running files through a matching program are referred to as standardization.
+Replacing spelling variants with a common consistent spelling is referred to as spelling standardization.
+a.  Replace 
+b.  Replace nicknames such as 
+c.  Replace words such as 
+Note: The third example is application dependent because 
+can refer to county or Colorado.
+Replacing inconsistent codes is referred to as assuring code consistency.
+a.  Replace Sex Sex (male
+b.  Replace 
+January 11, 1999
+January, 1999
+with MMDDYYYY
+or YYYYMMDD
+Code consistency is sometimes referred to as making the value-states of variables (or fields) consistent.  
+In record linkage, a variable (or field) is typically a character string such as a complete name, complete address, or a sub-component such as first name or last name.
+Identifying the starting and ending positions of the individual components of a free form string such as a name or address is referred to as parsing. 
+a. Identify locations of first name, middle initial, and last name in 
+Mr John A Smith Jr
+John Alexander Smith
+b. Identify locations of house number and street name in 
+East Main Street
+E. Main St. Apt. 16
+The idea of parsing is to allow the comparison of fields (variables) that should be consistent and reasonably easy to compare.  It is not easy to compare free-form names and addresses except possibly manually.  The above three ideas of standardization are often preliminary to situations when free-form names and addresses are broken (parsed) into components.  We cover general name and address standardization is the next two sections.
+Name standardization and parsing
+Standardization consists of replacing various spelling of words with a single spelling.  For instance, different spellings and abbreviations of 
+Incorporated
+might be replaced with the single standardized spelling 

@@ -1,0 +1,8 @@
+*.csv
+weights.json
+exports/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/

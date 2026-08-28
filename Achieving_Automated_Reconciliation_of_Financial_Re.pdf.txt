@@ -1,0 +1,130 @@
+Modern Economics & Management Forum
+794 | Manti Lu
+Achieving Automated Reconciliation of Financial Records via Artificial 
+Intelligence: Reducing Errors and Time Costs for U.S. Financial Service 
+Providers
+Manti Lu
+City University of Hong Kong, Hong Kong 999077, China
+Abstract: Studies have found that US financial service providers often use manual financial reconciliation methods due to 
+the fact that their business model is error-prone and inefficient. The average error rate can be more than 3%, the cost for com­
+pleting a transaction is 2-3 hours, and when the transaction quantity grows larger, there will appear large quantity errors and 
+increased costs, making it hard for them to meet regulatory compliance and efficient business operations. The study seeks 
+ways to resolve these issues. In terms of automating the reconciliation of financial records (including bank statements and 
+accounting vouchers), research on the effect of AI is conducted using desensitized data from three US financial institutions 
+(from 2023-2024). In these analyses it has been shown that the AI reduces the rate of errors to 0.4%, decreases the time per 
+transaction from 16 min to 8 min and increases the compliance match rate from 98.5% to 99.2%. In short, this study adds 
+further validation to and clearly demonstrates the fact that the use of AI will quantifiably augment and accelerate AI's“tech­
+nology application-effect”on financial reconciliation and provides such a solution that is applied, feasible and executable 
+for both institutions and their internal personnel, in addition to improving institution operations and governance, ensuring 
+compliance with standards, etc. 
+Keywords: AI-driven financial reconciliation, automated record matching, error reduction and time cost optimization in the 
+U. S. financial institutions  
+1. Research Background and Significance
+U.Many companies serving as financial service providers — from huge commercial banks down to small payment 
+processors — continually suffer the agony of processing finances manually. The average error rate is higher than 3%, 
+generally caused by human judgment error on unclear and dubious deals or mistakes when punching in information, while 
+one single transaction takes around 2~3 hours to be settled. The real problem is that when faced with the increasing volume 
+of transactions each month, both errors and time costs become a multiplier rather than an incremental rise, pushing limits 
+on a company's tiny amount of staff and putting heavy pressure on them to comply with strict rules in the US such as the 
+Sarbanes-Oxley Act, which calls for complete accuracy and deadline sensitivity on monthly finances.[1]
+Most existing studies on AI applications in fintech focus on its technical feasibility instead of“technology application-
+effect quantification”of reconciliation scenarios, leading to a disconnection between theory and practice. And this paper 
+makes an attempt to bridge this gap in two ways. Theoretically, it expands the interdisciplinary study area where AI and 
+financial accounting merge together with relevant AI quantified reconciliation scenarios obtained via the experiments done 
+by ourselves. Practically, it puts forward more specific U. S. financial institutions suitable AI reconciliation frameworks 
+based on ample evidence collected through experiments in our daily lives, so that they can minimize errors and save more 
+costs while improving their operational efficiencies and remaining competitive amid financial digitization.
+2. Core Concepts of AI-Driven Financial Reconciliation
+There are three core applications of technology for financial reconciliation: machine learning algorithms like random 
+forests or neural networks can extract from historical reconciliation data the patterns that help correlate rules based 
+relationships, identify the anomalies, and make the correlation; natural language processing will deal with unstructured data 
+issues and needs more extra explanations to add such explanations.
+Text mining is used to take unstructured data from ambiguous sentences and turn them into a structure. Computer 
+vision can scan over real world documents and digital ones  for the purpose of transforming specific fields with precision, 
+eliminating human error associated with manual data entry.[2]
+Automated reconciliation effect evaluation metrics will be established to objectify the level of AI's performance. 
+Error rate indicates how many discrepancies such as unmatched and unrecognized discrepancies, do not get detected in 
+Volume 6 Issue 5 | 2025 | 795
+Modern Economics & Management Forum
+the reconciliation process (e. g., mismatches). Time cost means the average time required to finish one reconciliation task. 
+Compliance match rate is the proportion of reconciliations conducted based on regulations such as US GAAP and SOX. 
+Such metrics aim to set up an objective standard for contrasting the difference between manual reconciliation and AI-driven 
+reconciliation.[3]
+3. Data Sample, Preprocessing, and Statistical Comparison Results
+This research project makes use of deidentified financial data from three US financial service providers - a large 
+commercial bank (5+ million transactions monthly), a medium sized credit company (1-2 million monthly) and a small 
+payment processor (50,000-100,000 monthly) for the year period of 2023 to 2024. There are more than 100,000 bank 
+transaction records in the dataset that describe detail information of transactions such as amount, date, counterparty name, 
+and transaction code and more than 80,000 accounting vouchers (such as an invoice, a payment slip, or an expense report) 
+cover various businesses scenarios with different transaction volumes and various document types (digital PDFs, scanned 
+image, and physical paper records).[4]
+Statistical comparison indicates there is a difference between human and AI-powered reconciliation. In terms of error 
+rate, on average, there were 2.8% error rates for manual reconciliation and 0.8% for AI-based reconciliation. Most errors 
+were due to the human mistranslation (45%) of unclear transactions or misentry (35%) of details. Reconciliation transactions 
+by manually occurred in an average of 115 min with larger banks encountering longer delay.
+Due to huge transaction volume, the cost of errors is enormous. Reconciliation via AI has further reduced the error rate 
+from an original 0.7%, only to 0.4%, almost entirely through rare errors of misreading hand-written vouchers that account 
+for just 0.3%. It takes only an average of 8 minutes per transaction with the use of AI, which means a reduction of 93%. 
+Meanwhile, the compliance match rate increases from an average of 92.1% in manual reconciliation to 99.2%.
+4. AI's Automated Matching Logic and Innovative Application Effects
+AI's automatic matching rules for financial records runs using three related functionalities. Firstly, machine learning 
+models - which is specifically the use of a random forest algorithm taking in and learning historical reconciliation data, from 
+the last 24 months - can pick up on rule-based connections in the correlation of financial records, for example, the model will 
+find that the amount involved in a bank transaction should match. 
+The accounting voucher amounts should be within $0.01 of the bank statement values (accounting for rounding 
+differences), and transaction dates should match within 3 days between bank statements and vouchers (this is industry 
+standard time lag when paying). The model will then be able to automatically match corresponding entries (e. g. bank 
+transaction ID to voucher number) without human intervention to reduce reliance on personnel familiar with how to do 
+complex reconciliations.
+With the help of Natural Language Processing, data problems caused by manual errors due to unstructured data have 
+been resolved. There are situations where vendors only have one customer number on each individual document; yet their 
+name may vary across other documents—possibly listed as“ABC Corp”, “ABC Co.”,  or“ABC Enterprises”。 By utilizing 
+a prebuilt industry glossary and entity recognition technology, NLP can automatically parse such summary information 
+and standardize vendor names and transaction types accurately at a rate of 98.7%. Compared with manual interpretations, 
+automatic matching based on NLP has a better precision accuracy of 19%, due to the staff's failure to see those small 
+mismatches.
+By scanning the physical or digital financial documents like printed bank statements, PDF vouchers, and handwritten 
+expense reports, computer vision technology can pull the key information (such as transaction amounts, dates, and voucher 
+numbers) with an accuracy of more than 99.5%. With physical documents, OCR methods will utilize image preprocessing 
+such as noise reduction and skew correction to increase legibility, whereas when handling digital documents, no OCR 
+method is needed and you can simply use the structured data found within PDFs fields.
+Beyond the basic match process, AI has two other unique ways to improve reconciliation. The first is real-time alerts 
+for reconciliation. As soon as a transaction comes into the system, AI can monitor it, and will immediately raise a warning 
+to the finance team if an anomaly (such as a bank transaction amount being greater than the related voucher amount by over 
+10%) is spotted in under five minutes. This means there is a 94% improvement compared with manually processing a batch 
+of reconciliations.
+In general, it takes 24–48 hours to determine and fix any anomaly issues. A second one, cross-institution reconciliation 
+through collaboration, using AI to integrate with APIs of numerous financial platforms (banks systems, accounting software 
+and payment gateway), allows real-time data sync across multiple institutions. 
+Modern Economics & Management Forum
+796 | Manti Lu
+5. Conclusions
+AI vastly improves accuracy and speed while also reducing the risk of non-compliance to regulatory bodies. Large 
+banks can scale to very high transaction volumes with almost no increase in either time or errors. Medium credit card 
+companies will gain efficiency that allows them to reallocate staff from reconciliations to other mission-critical customer-
+centric tasks. Small payment processors, which often do not even have full-time dedicated reconciliation teams to hire for 
+months at a time.
+Three recommendations were put forward for AI-based reconciliation implementation. First, adopt a staged roll-out 
+approach that starts with frequent, low-complexity (such as daily retail payments), which test the solution's performance 
+and gather user feedback, refines the AI model and then gradually move into the more complex (such as cross-border) 
+reconciliations.
+Secondly, establish proper workflows, improve data security protection by fully encrypting financial data using end-to-
+end encryption, authorizing reconciler access to such data by role, and conducting quarterly security audits as needed under 
+U. S.-data privacy laws, such as the Gramm-Leach-Bliley Act. Thirdly, provide appropriate staff training - focused on how 
+to run the AI systems. This allows the finance team to start managing the daily running of these tools going forward and 
+maximizing the value of the tool for the long term.
+References
+[1]	 Naveen Kumar Dodde Gowda, AI and Human-AI Collaboration in Financial Reconciliation Systems”, Int. J. Sci. Res. 
+Comput. Sci. Eng. Inf. Technol, vol. 11, no. 1, pp. 3255–3265, Feb. 2025.
+[2]	 Saeed Awadh Bin-Nashwan, Jackie Zhanbiao Li, HaiChang Jiang, Anas Rasheed Bajary, Muhammad M. Ma'aji,Does 
+AI adoption redefine financial reporting accuracy, auditing efficiency, and information asymmetry? An integrated mod­
+el of TOE-TAM-RDT and big data governance, Computers in Human Behavior Reports,Volume 17,2025,100572,ISSN 
+2451-9588,
+[3]	 Al-Omush, A., Almasarwah, A., & Al-Wreikat, A. (2025). Artificial intelligence in financial auditing: redefining accu­
+racy and transparency in assurance services. EDPACS, 70(6), 1–20.
+[4]	 Eze, Chukwuka & Alao, Olakunle & Dudu, Oritsematosan & Alonge, Enoch. (2024). Automation in financial reporting: 
+A conceptual framework for efficiency and accuracy in U.S. corporations. Global Journal of Advanced Research and 
+Reviews. 2. 10.58175/gjarr.2024.2.2.0057. 
+Author Bio
+Manti Lu, female, Han, Yan'an, Shaanxi, bachelor's degree in economics, master's degree in progress. Research interests: 
+Application of data science in ESG.

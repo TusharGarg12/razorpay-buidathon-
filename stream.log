@@ -1,0 +1,808 @@
+data: {"type": "status", "step": "Initializing pipeline..."}
+
+data: {"type": "status", "step": "Blocking Pre-Filter (DeepBlocker)..."}
+
+data: {"type": "progress", "processed": 1, "total": 400, "matched": 1, "exceptions": 0}
+
+data: {"type": "progress", "processed": 2, "total": 400, "matched": 2, "exceptions": 0}
+
+data: {"type": "progress", "processed": 3, "total": 400, "matched": 3, "exceptions": 0}
+
+data: {"type": "progress", "processed": 4, "total": 400, "matched": 4, "exceptions": 0}
+
+data: {"type": "progress", "processed": 5, "total": 400, "matched": 5, "exceptions": 0}
+
+data: {"type": "progress", "processed": 6, "total": 400, "matched": 6, "exceptions": 0}
+
+data: {"type": "progress", "processed": 7, "total": 400, "matched": 7, "exceptions": 0}
+
+data: {"type": "progress", "processed": 8, "total": 400, "matched": 8, "exceptions": 0}
+
+data: {"type": "progress", "processed": 9, "total": 400, "matched": 9, "exceptions": 0}
+
+data: {"type": "progress", "processed": 10, "total": 400, "matched": 9, "exceptions": 1}
+
+data: {"type": "progress", "processed": 11, "total": 400, "matched": 10, "exceptions": 1}
+
+data: {"type": "progress", "processed": 12, "total": 400, "matched": 11, "exceptions": 1}
+
+data: {"type": "progress", "processed": 13, "total": 400, "matched": 12, "exceptions": 1}
+
+data: {"type": "progress", "processed": 14, "total": 400, "matched": 13, "exceptions": 1}
+
+data: {"type": "progress", "processed": 15, "total": 400, "matched": 14, "exceptions": 1}
+
+data: {"type": "progress", "processed": 16, "total": 400, "matched": 15, "exceptions": 1}
+
+data: {"type": "progress", "processed": 17, "total": 400, "matched": 16, "exceptions": 1}
+
+data: {"type": "progress", "processed": 18, "total": 400, "matched": 17, "exceptions": 1}
+
+data: {"type": "progress", "processed": 19, "total": 400, "matched": 18, "exceptions": 1}
+
+data: {"type": "progress", "processed": 20, "total": 400, "matched": 19, "exceptions": 1}
+
+data: {"type": "progress", "processed": 21, "total": 400, "matched": 20, "exceptions": 1}
+
+data: {"type": "progress", "processed": 22, "total": 400, "matched": 21, "exceptions": 1}
+
+data: {"type": "progress", "processed": 23, "total": 400, "matched": 22, "exceptions": 1}
+
+data: {"type": "progress", "processed": 24, "total": 400, "matched": 23, "exceptions": 1}
+
+data: {"type": "progress", "processed": 25, "total": 400, "matched": 24, "exceptions": 1}
+
+data: {"type": "progress", "processed": 26, "total": 400, "matched": 25, "exceptions": 1}
+
+data: {"type": "progress", "processed": 27, "total": 400, "matched": 26, "exceptions": 1}
+
+data: {"type": "progress", "processed": 28, "total": 400, "matched": 27, "exceptions": 1}
+
+data: {"type": "progress", "processed": 29, "total": 400, "matched": 28, "exceptions": 1}
+
+data: {"type": "progress", "processed": 30, "total": 400, "matched": 29, "exceptions": 1}
+
+data: {"type": "progress", "processed": 31, "total": 400, "matched": 30, "exceptions": 1}
+
+data: {"type": "progress", "processed": 32, "total": 400, "matched": 31, "exceptions": 1}
+
+data: {"type": "progress", "processed": 33, "total": 400, "matched": 32, "exceptions": 1}
+
+data: {"type": "progress", "processed": 34, "total": 400, "matched": 32, "exceptions": 2}
+
+data: {"type": "progress", "processed": 35, "total": 400, "matched": 33, "exceptions": 2}
+
+data: {"type": "progress", "processed": 36, "total": 400, "matched": 34, "exceptions": 2}
+
+data: {"type": "progress", "processed": 37, "total": 400, "matched": 35, "exceptions": 2}
+
+data: {"type": "progress", "processed": 38, "total": 400, "matched": 36, "exceptions": 2}
+
+data: {"type": "progress", "processed": 39, "total": 400, "matched": 37, "exceptions": 2}
+
+data: {"type": "progress", "processed": 40, "total": 400, "matched": 38, "exceptions": 2}
+
+data: {"type": "progress", "processed": 41, "total": 400, "matched": 39, "exceptions": 2}
+
+data: {"type": "progress", "processed": 42, "total": 400, "matched": 40, "exceptions": 2}
+
+data: {"type": "progress", "processed": 43, "total": 400, "matched": 41, "exceptions": 2}
+
+data: {"type": "progress", "processed": 44, "total": 400, "matched": 42, "exceptions": 2}
+
+data: {"type": "progress", "processed": 45, "total": 400, "matched": 43, "exceptions": 2}
+
+data: {"type": "progress", "processed": 46, "total": 400, "matched": 44, "exceptions": 2}
+
+data: {"type": "progress", "processed": 47, "total": 400, "matched": 45, "exceptions": 2}
+
+data: {"type": "progress", "processed": 48, "total": 400, "matched": 46, "exceptions": 2}
+
+data: {"type": "progress", "processed": 49, "total": 400, "matched": 47, "exceptions": 2}
+
+data: {"type": "progress", "processed": 50, "total": 400, "matched": 48, "exceptions": 2}
+
+data: {"type": "progress", "processed": 51, "total": 400, "matched": 49, "exceptions": 2}
+
+data: {"type": "progress", "processed": 52, "total": 400, "matched": 50, "exceptions": 2}
+
+data: {"type": "progress", "processed": 53, "total": 400, "matched": 51, "exceptions": 2}
+
+data: {"type": "progress", "processed": 54, "total": 400, "matched": 52, "exceptions": 2}
+
+data: {"type": "progress", "processed": 55, "total": 400, "matched": 53, "exceptions": 2}
+
+data: {"type": "progress", "processed": 56, "total": 400, "matched": 54, "exceptions": 2}
+
+data: {"type": "progress", "processed": 57, "total": 400, "matched": 55, "exceptions": 2}
+
+data: {"type": "progress", "processed": 58, "total": 400, "matched": 56, "exceptions": 2}
+
+data: {"type": "progress", "processed": 59, "total": 400, "matched": 57, "exceptions": 2}
+
+data: {"type": "progress", "processed": 60, "total": 400, "matched": 58, "exceptions": 2}
+
+data: {"type": "progress", "processed": 61, "total": 400, "matched": 59, "exceptions": 2}
+
+data: {"type": "progress", "processed": 62, "total": 400, "matched": 60, "exceptions": 2}
+
+data: {"type": "progress", "processed": 63, "total": 400, "matched": 61, "exceptions": 2}
+
+data: {"type": "progress", "processed": 64, "total": 400, "matched": 62, "exceptions": 2}
+
+data: {"type": "progress", "processed": 65, "total": 400, "matched": 63, "exceptions": 2}
+
+data: {"type": "progress", "processed": 66, "total": 400, "matched": 64, "exceptions": 2}
+
+data: {"type": "progress", "processed": 67, "total": 400, "matched": 65, "exceptions": 2}
+
+data: {"type": "progress", "processed": 68, "total": 400, "matched": 66, "exceptions": 2}
+
+data: {"type": "progress", "processed": 69, "total": 400, "matched": 67, "exceptions": 2}
+
+data: {"type": "progress", "processed": 70, "total": 400, "matched": 68, "exceptions": 2}
+
+data: {"type": "progress", "processed": 71, "total": 400, "matched": 69, "exceptions": 2}
+
+data: {"type": "progress", "processed": 72, "total": 400, "matched": 69, "exceptions": 3}
+
+data: {"type": "progress", "processed": 73, "total": 400, "matched": 70, "exceptions": 3}
+
+data: {"type": "progress", "processed": 74, "total": 400, "matched": 71, "exceptions": 3}
+
+data: {"type": "progress", "processed": 75, "total": 400, "matched": 72, "exceptions": 3}
+
+data: {"type": "progress", "processed": 76, "total": 400, "matched": 73, "exceptions": 3}
+
+data: {"type": "progress", "processed": 77, "total": 400, "matched": 74, "exceptions": 3}
+
+data: {"type": "progress", "processed": 78, "total": 400, "matched": 75, "exceptions": 3}
+
+data: {"type": "progress", "processed": 79, "total": 400, "matched": 76, "exceptions": 3}
+
+data: {"type": "progress", "processed": 80, "total": 400, "matched": 77, "exceptions": 3}
+
+data: {"type": "progress", "processed": 81, "total": 400, "matched": 78, "exceptions": 3}
+
+data: {"type": "progress", "processed": 82, "total": 400, "matched": 79, "exceptions": 3}
+
+data: {"type": "progress", "processed": 83, "total": 400, "matched": 80, "exceptions": 3}
+
+data: {"type": "progress", "processed": 84, "total": 400, "matched": 81, "exceptions": 3}
+
+data: {"type": "progress", "processed": 85, "total": 400, "matched": 82, "exceptions": 3}
+
+data: {"type": "progress", "processed": 86, "total": 400, "matched": 83, "exceptions": 3}
+
+data: {"type": "progress", "processed": 87, "total": 400, "matched": 84, "exceptions": 3}
+
+data: {"type": "progress", "processed": 88, "total": 400, "matched": 85, "exceptions": 3}
+
+data: {"type": "progress", "processed": 89, "total": 400, "matched": 85, "exceptions": 4}
+
+data: {"type": "progress", "processed": 90, "total": 400, "matched": 86, "exceptions": 4}
+
+data: {"type": "progress", "processed": 91, "total": 400, "matched": 87, "exceptions": 4}
+
+data: {"type": "progress", "processed": 92, "total": 400, "matched": 88, "exceptions": 4}
+
+data: {"type": "progress", "processed": 93, "total": 400, "matched": 89, "exceptions": 4}
+
+data: {"type": "progress", "processed": 94, "total": 400, "matched": 90, "exceptions": 4}
+
+data: {"type": "progress", "processed": 95, "total": 400, "matched": 91, "exceptions": 4}
+
+data: {"type": "progress", "processed": 96, "total": 400, "matched": 92, "exceptions": 4}
+
+data: {"type": "progress", "processed": 97, "total": 400, "matched": 93, "exceptions": 4}
+
+data: {"type": "progress", "processed": 98, "total": 400, "matched": 94, "exceptions": 4}
+
+data: {"type": "progress", "processed": 99, "total": 400, "matched": 95, "exceptions": 4}
+
+data: {"type": "progress", "processed": 100, "total": 400, "matched": 96, "exceptions": 4}
+
+data: {"type": "progress", "processed": 101, "total": 400, "matched": 97, "exceptions": 4}
+
+data: {"type": "progress", "processed": 102, "total": 400, "matched": 98, "exceptions": 4}
+
+data: {"type": "progress", "processed": 103, "total": 400, "matched": 99, "exceptions": 4}
+
+data: {"type": "progress", "processed": 104, "total": 400, "matched": 100, "exceptions": 4}
+
+data: {"type": "progress", "processed": 105, "total": 400, "matched": 101, "exceptions": 4}
+
+data: {"type": "progress", "processed": 106, "total": 400, "matched": 102, "exceptions": 4}
+
+data: {"type": "progress", "processed": 107, "total": 400, "matched": 103, "exceptions": 4}
+
+data: {"type": "progress", "processed": 108, "total": 400, "matched": 104, "exceptions": 4}
+
+data: {"type": "progress", "processed": 109, "total": 400, "matched": 105, "exceptions": 4}
+
+data: {"type": "progress", "processed": 110, "total": 400, "matched": 106, "exceptions": 4}
+
+data: {"type": "progress", "processed": 111, "total": 400, "matched": 107, "exceptions": 4}
+
+data: {"type": "progress", "processed": 112, "total": 400, "matched": 108, "exceptions": 4}
+
+data: {"type": "progress", "processed": 113, "total": 400, "matched": 109, "exceptions": 4}
+
+data: {"type": "progress", "processed": 114, "total": 400, "matched": 110, "exceptions": 4}
+
+data: {"type": "progress", "processed": 115, "total": 400, "matched": 111, "exceptions": 4}
+
+data: {"type": "progress", "processed": 116, "total": 400, "matched": 112, "exceptions": 4}
+
+data: {"type": "progress", "processed": 117, "total": 400, "matched": 113, "exceptions": 4}
+
+data: {"type": "progress", "processed": 118, "total": 400, "matched": 114, "exceptions": 4}
+
+data: {"type": "progress", "processed": 119, "total": 400, "matched": 114, "exceptions": 5}
+
+data: {"type": "progress", "processed": 120, "total": 400, "matched": 115, "exceptions": 5}
+
+data: {"type": "progress", "processed": 121, "total": 400, "matched": 116, "exceptions": 5}
+
+data: {"type": "progress", "processed": 122, "total": 400, "matched": 117, "exceptions": 5}
+
+data: {"type": "progress", "processed": 123, "total": 400, "matched": 118, "exceptions": 5}
+
+data: {"type": "progress", "processed": 124, "total": 400, "matched": 119, "exceptions": 5}
+
+data: {"type": "progress", "processed": 125, "total": 400, "matched": 120, "exceptions": 5}
+
+data: {"type": "progress", "processed": 126, "total": 400, "matched": 121, "exceptions": 5}
+
+data: {"type": "progress", "processed": 127, "total": 400, "matched": 122, "exceptions": 5}
+
+data: {"type": "progress", "processed": 128, "total": 400, "matched": 123, "exceptions": 5}
+
+data: {"type": "progress", "processed": 129, "total": 400, "matched": 124, "exceptions": 5}
+
+data: {"type": "progress", "processed": 130, "total": 400, "matched": 125, "exceptions": 5}
+
+data: {"type": "progress", "processed": 131, "total": 400, "matched": 126, "exceptions": 5}
+
+data: {"type": "progress", "processed": 132, "total": 400, "matched": 127, "exceptions": 5}
+
+data: {"type": "progress", "processed": 133, "total": 400, "matched": 128, "exceptions": 5}
+
+data: {"type": "progress", "processed": 134, "total": 400, "matched": 129, "exceptions": 5}
+
+data: {"type": "progress", "processed": 135, "total": 400, "matched": 130, "exceptions": 5}
+
+data: {"type": "progress", "processed": 136, "total": 400, "matched": 131, "exceptions": 5}
+
+data: {"type": "progress", "processed": 137, "total": 400, "matched": 132, "exceptions": 5}
+
+data: {"type": "progress", "processed": 138, "total": 400, "matched": 133, "exceptions": 5}
+
+data: {"type": "progress", "processed": 139, "total": 400, "matched": 134, "exceptions": 5}
+
+data: {"type": "progress", "processed": 140, "total": 400, "matched": 135, "exceptions": 5}
+
+data: {"type": "progress", "processed": 141, "total": 400, "matched": 136, "exceptions": 5}
+
+data: {"type": "progress", "processed": 142, "total": 400, "matched": 137, "exceptions": 5}
+
+data: {"type": "progress", "processed": 143, "total": 400, "matched": 138, "exceptions": 5}
+
+data: {"type": "progress", "processed": 144, "total": 400, "matched": 139, "exceptions": 5}
+
+data: {"type": "progress", "processed": 145, "total": 400, "matched": 140, "exceptions": 5}
+
+data: {"type": "progress", "processed": 146, "total": 400, "matched": 141, "exceptions": 5}
+
+data: {"type": "progress", "processed": 147, "total": 400, "matched": 142, "exceptions": 5}
+
+data: {"type": "progress", "processed": 148, "total": 400, "matched": 143, "exceptions": 5}
+
+data: {"type": "progress", "processed": 149, "total": 400, "matched": 143, "exceptions": 6}
+
+data: {"type": "progress", "processed": 150, "total": 400, "matched": 144, "exceptions": 6}
+
+data: {"type": "progress", "processed": 151, "total": 400, "matched": 145, "exceptions": 6}
+
+data: {"type": "progress", "processed": 152, "total": 400, "matched": 146, "exceptions": 6}
+
+data: {"type": "progress", "processed": 153, "total": 400, "matched": 147, "exceptions": 6}
+
+data: {"type": "progress", "processed": 154, "total": 400, "matched": 148, "exceptions": 6}
+
+data: {"type": "progress", "processed": 155, "total": 400, "matched": 149, "exceptions": 6}
+
+data: {"type": "progress", "processed": 156, "total": 400, "matched": 150, "exceptions": 6}
+
+data: {"type": "progress", "processed": 157, "total": 400, "matched": 151, "exceptions": 6}
+
+data: {"type": "progress", "processed": 158, "total": 400, "matched": 152, "exceptions": 6}
+
+data: {"type": "progress", "processed": 159, "total": 400, "matched": 153, "exceptions": 6}
+
+data: {"type": "progress", "processed": 160, "total": 400, "matched": 154, "exceptions": 6}
+
+data: {"type": "progress", "processed": 161, "total": 400, "matched": 155, "exceptions": 6}
+
+data: {"type": "progress", "processed": 162, "total": 400, "matched": 156, "exceptions": 6}
+
+data: {"type": "progress", "processed": 163, "total": 400, "matched": 157, "exceptions": 6}
+
+data: {"type": "progress", "processed": 164, "total": 400, "matched": 158, "exceptions": 6}
+
+data: {"type": "progress", "processed": 165, "total": 400, "matched": 159, "exceptions": 6}
+
+data: {"type": "progress", "processed": 166, "total": 400, "matched": 160, "exceptions": 6}
+
+data: {"type": "progress", "processed": 167, "total": 400, "matched": 161, "exceptions": 6}
+
+data: {"type": "progress", "processed": 168, "total": 400, "matched": 162, "exceptions": 6}
+
+data: {"type": "progress", "processed": 169, "total": 400, "matched": 163, "exceptions": 6}
+
+data: {"type": "progress", "processed": 170, "total": 400, "matched": 164, "exceptions": 6}
+
+data: {"type": "progress", "processed": 171, "total": 400, "matched": 165, "exceptions": 6}
+
+data: {"type": "progress", "processed": 172, "total": 400, "matched": 166, "exceptions": 6}
+
+data: {"type": "progress", "processed": 173, "total": 400, "matched": 167, "exceptions": 6}
+
+data: {"type": "progress", "processed": 174, "total": 400, "matched": 168, "exceptions": 6}
+
+data: {"type": "progress", "processed": 175, "total": 400, "matched": 169, "exceptions": 6}
+
+data: {"type": "progress", "processed": 176, "total": 400, "matched": 170, "exceptions": 6}
+
+data: {"type": "progress", "processed": 177, "total": 400, "matched": 171, "exceptions": 6}
+
+data: {"type": "progress", "processed": 178, "total": 400, "matched": 172, "exceptions": 6}
+
+data: {"type": "progress", "processed": 179, "total": 400, "matched": 173, "exceptions": 6}
+
+data: {"type": "progress", "processed": 180, "total": 400, "matched": 174, "exceptions": 6}
+
+data: {"type": "progress", "processed": 181, "total": 400, "matched": 175, "exceptions": 6}
+
+data: {"type": "progress", "processed": 182, "total": 400, "matched": 176, "exceptions": 6}
+
+data: {"type": "progress", "processed": 183, "total": 400, "matched": 177, "exceptions": 6}
+
+data: {"type": "progress", "processed": 184, "total": 400, "matched": 178, "exceptions": 6}
+
+data: {"type": "progress", "processed": 185, "total": 400, "matched": 179, "exceptions": 6}
+
+data: {"type": "progress", "processed": 186, "total": 400, "matched": 180, "exceptions": 6}
+
+data: {"type": "progress", "processed": 187, "total": 400, "matched": 181, "exceptions": 6}
+
+data: {"type": "progress", "processed": 188, "total": 400, "matched": 182, "exceptions": 6}
+
+data: {"type": "progress", "processed": 189, "total": 400, "matched": 183, "exceptions": 6}
+
+data: {"type": "progress", "processed": 190, "total": 400, "matched": 184, "exceptions": 6}
+
+data: {"type": "progress", "processed": 191, "total": 400, "matched": 185, "exceptions": 6}
+
+data: {"type": "progress", "processed": 192, "total": 400, "matched": 186, "exceptions": 6}
+
+data: {"type": "progress", "processed": 193, "total": 400, "matched": 187, "exceptions": 6}
+
+data: {"type": "progress", "processed": 194, "total": 400, "matched": 188, "exceptions": 6}
+
+data: {"type": "progress", "processed": 195, "total": 400, "matched": 189, "exceptions": 6}
+
+data: {"type": "progress", "processed": 196, "total": 400, "matched": 190, "exceptions": 6}
+
+data: {"type": "progress", "processed": 197, "total": 400, "matched": 191, "exceptions": 6}
+
+data: {"type": "progress", "processed": 198, "total": 400, "matched": 192, "exceptions": 6}
+
+data: {"type": "progress", "processed": 199, "total": 400, "matched": 193, "exceptions": 6}
+
+data: {"type": "progress", "processed": 200, "total": 400, "matched": 194, "exceptions": 6}
+
+data: {"type": "progress", "processed": 201, "total": 400, "matched": 195, "exceptions": 6}
+
+data: {"type": "progress", "processed": 202, "total": 400, "matched": 196, "exceptions": 6}
+
+data: {"type": "progress", "processed": 203, "total": 400, "matched": 197, "exceptions": 6}
+
+data: {"type": "progress", "processed": 204, "total": 400, "matched": 198, "exceptions": 6}
+
+data: {"type": "progress", "processed": 205, "total": 400, "matched": 199, "exceptions": 6}
+
+data: {"type": "progress", "processed": 206, "total": 400, "matched": 200, "exceptions": 6}
+
+data: {"type": "progress", "processed": 207, "total": 400, "matched": 201, "exceptions": 6}
+
+data: {"type": "progress", "processed": 208, "total": 400, "matched": 202, "exceptions": 6}
+
+data: {"type": "progress", "processed": 209, "total": 400, "matched": 203, "exceptions": 6}
+
+data: {"type": "progress", "processed": 210, "total": 400, "matched": 204, "exceptions": 6}
+
+data: {"type": "progress", "processed": 211, "total": 400, "matched": 205, "exceptions": 6}
+
+data: {"type": "progress", "processed": 212, "total": 400, "matched": 206, "exceptions": 6}
+
+data: {"type": "progress", "processed": 213, "total": 400, "matched": 207, "exceptions": 6}
+
+data: {"type": "progress", "processed": 214, "total": 400, "matched": 208, "exceptions": 6}
+
+data: {"type": "progress", "processed": 215, "total": 400, "matched": 209, "exceptions": 6}
+
+data: {"type": "progress", "processed": 216, "total": 400, "matched": 210, "exceptions": 6}
+
+data: {"type": "progress", "processed": 217, "total": 400, "matched": 211, "exceptions": 6}
+
+data: {"type": "progress", "processed": 218, "total": 400, "matched": 212, "exceptions": 6}
+
+data: {"type": "progress", "processed": 219, "total": 400, "matched": 213, "exceptions": 6}
+
+data: {"type": "progress", "processed": 220, "total": 400, "matched": 214, "exceptions": 6}
+
+data: {"type": "progress", "processed": 221, "total": 400, "matched": 215, "exceptions": 6}
+
+data: {"type": "progress", "processed": 222, "total": 400, "matched": 216, "exceptions": 6}
+
+data: {"type": "progress", "processed": 223, "total": 400, "matched": 217, "exceptions": 6}
+
+data: {"type": "progress", "processed": 224, "total": 400, "matched": 217, "exceptions": 7}
+
+data: {"type": "progress", "processed": 225, "total": 400, "matched": 218, "exceptions": 7}
+
+data: {"type": "progress", "processed": 226, "total": 400, "matched": 219, "exceptions": 7}
+
+data: {"type": "progress", "processed": 227, "total": 400, "matched": 220, "exceptions": 7}
+
+data: {"type": "progress", "processed": 228, "total": 400, "matched": 221, "exceptions": 7}
+
+data: {"type": "progress", "processed": 229, "total": 400, "matched": 222, "exceptions": 7}
+
+data: {"type": "progress", "processed": 230, "total": 400, "matched": 223, "exceptions": 7}
+
+data: {"type": "progress", "processed": 231, "total": 400, "matched": 224, "exceptions": 7}
+
+data: {"type": "progress", "processed": 232, "total": 400, "matched": 225, "exceptions": 7}
+
+data: {"type": "progress", "processed": 233, "total": 400, "matched": 226, "exceptions": 7}
+
+data: {"type": "progress", "processed": 234, "total": 400, "matched": 227, "exceptions": 7}
+
+data: {"type": "progress", "processed": 235, "total": 400, "matched": 228, "exceptions": 7}
+
+data: {"type": "progress", "processed": 236, "total": 400, "matched": 229, "exceptions": 7}
+
+data: {"type": "progress", "processed": 237, "total": 400, "matched": 230, "exceptions": 7}
+
+data: {"type": "progress", "processed": 238, "total": 400, "matched": 231, "exceptions": 7}
+
+data: {"type": "progress", "processed": 239, "total": 400, "matched": 232, "exceptions": 7}
+
+data: {"type": "progress", "processed": 240, "total": 400, "matched": 233, "exceptions": 7}
+
+data: {"type": "progress", "processed": 241, "total": 400, "matched": 234, "exceptions": 7}
+
+data: {"type": "progress", "processed": 242, "total": 400, "matched": 235, "exceptions": 7}
+
+data: {"type": "progress", "processed": 243, "total": 400, "matched": 236, "exceptions": 7}
+
+data: {"type": "progress", "processed": 244, "total": 400, "matched": 237, "exceptions": 7}
+
+data: {"type": "progress", "processed": 245, "total": 400, "matched": 237, "exceptions": 8}
+
+data: {"type": "progress", "processed": 246, "total": 400, "matched": 238, "exceptions": 8}
+
+data: {"type": "progress", "processed": 247, "total": 400, "matched": 239, "exceptions": 8}
+
+data: {"type": "progress", "processed": 248, "total": 400, "matched": 240, "exceptions": 8}
+
+data: {"type": "progress", "processed": 249, "total": 400, "matched": 241, "exceptions": 8}
+
+data: {"type": "progress", "processed": 250, "total": 400, "matched": 242, "exceptions": 8}
+
+data: {"type": "progress", "processed": 251, "total": 400, "matched": 243, "exceptions": 8}
+
+data: {"type": "progress", "processed": 252, "total": 400, "matched": 244, "exceptions": 8}
+
+data: {"type": "progress", "processed": 253, "total": 400, "matched": 245, "exceptions": 8}
+
+data: {"type": "progress", "processed": 254, "total": 400, "matched": 246, "exceptions": 8}
+
+data: {"type": "progress", "processed": 255, "total": 400, "matched": 247, "exceptions": 8}
+
+data: {"type": "progress", "processed": 256, "total": 400, "matched": 248, "exceptions": 8}
+
+data: {"type": "progress", "processed": 257, "total": 400, "matched": 249, "exceptions": 8}
+
+data: {"type": "progress", "processed": 258, "total": 400, "matched": 250, "exceptions": 8}
+
+data: {"type": "progress", "processed": 259, "total": 400, "matched": 251, "exceptions": 8}
+
+data: {"type": "progress", "processed": 260, "total": 400, "matched": 252, "exceptions": 8}
+
+data: {"type": "progress", "processed": 261, "total": 400, "matched": 253, "exceptions": 8}
+
+data: {"type": "progress", "processed": 262, "total": 400, "matched": 254, "exceptions": 8}
+
+data: {"type": "progress", "processed": 263, "total": 400, "matched": 255, "exceptions": 8}
+
+data: {"type": "progress", "processed": 264, "total": 400, "matched": 256, "exceptions": 8}
+
+data: {"type": "progress", "processed": 265, "total": 400, "matched": 257, "exceptions": 8}
+
+data: {"type": "progress", "processed": 266, "total": 400, "matched": 258, "exceptions": 8}
+
+data: {"type": "progress", "processed": 267, "total": 400, "matched": 259, "exceptions": 8}
+
+data: {"type": "progress", "processed": 268, "total": 400, "matched": 260, "exceptions": 8}
+
+data: {"type": "progress", "processed": 269, "total": 400, "matched": 261, "exceptions": 8}
+
+data: {"type": "progress", "processed": 270, "total": 400, "matched": 262, "exceptions": 8}
+
+data: {"type": "progress", "processed": 271, "total": 400, "matched": 263, "exceptions": 8}
+
+data: {"type": "progress", "processed": 272, "total": 400, "matched": 264, "exceptions": 8}
+
+data: {"type": "progress", "processed": 273, "total": 400, "matched": 265, "exceptions": 8}
+
+data: {"type": "progress", "processed": 274, "total": 400, "matched": 266, "exceptions": 8}
+
+data: {"type": "progress", "processed": 275, "total": 400, "matched": 267, "exceptions": 8}
+
+data: {"type": "progress", "processed": 276, "total": 400, "matched": 268, "exceptions": 8}
+
+data: {"type": "progress", "processed": 277, "total": 400, "matched": 269, "exceptions": 8}
+
+data: {"type": "progress", "processed": 278, "total": 400, "matched": 270, "exceptions": 8}
+
+data: {"type": "progress", "processed": 279, "total": 400, "matched": 271, "exceptions": 8}
+
+data: {"type": "progress", "processed": 280, "total": 400, "matched": 272, "exceptions": 8}
+
+data: {"type": "progress", "processed": 281, "total": 400, "matched": 273, "exceptions": 8}
+
+data: {"type": "progress", "processed": 282, "total": 400, "matched": 274, "exceptions": 8}
+
+data: {"type": "progress", "processed": 283, "total": 400, "matched": 275, "exceptions": 8}
+
+data: {"type": "progress", "processed": 284, "total": 400, "matched": 276, "exceptions": 8}
+
+data: {"type": "progress", "processed": 285, "total": 400, "matched": 277, "exceptions": 8}
+
+data: {"type": "progress", "processed": 286, "total": 400, "matched": 278, "exceptions": 8}
+
+data: {"type": "progress", "processed": 287, "total": 400, "matched": 279, "exceptions": 8}
+
+data: {"type": "progress", "processed": 288, "total": 400, "matched": 280, "exceptions": 8}
+
+data: {"type": "progress", "processed": 289, "total": 400, "matched": 281, "exceptions": 8}
+
+data: {"type": "progress", "processed": 290, "total": 400, "matched": 282, "exceptions": 8}
+
+data: {"type": "progress", "processed": 291, "total": 400, "matched": 283, "exceptions": 8}
+
+data: {"type": "progress", "processed": 292, "total": 400, "matched": 284, "exceptions": 8}
+
+data: {"type": "progress", "processed": 293, "total": 400, "matched": 285, "exceptions": 8}
+
+data: {"type": "progress", "processed": 294, "total": 400, "matched": 286, "exceptions": 8}
+
+data: {"type": "progress", "processed": 295, "total": 400, "matched": 287, "exceptions": 8}
+
+data: {"type": "progress", "processed": 296, "total": 400, "matched": 288, "exceptions": 8}
+
+data: {"type": "progress", "processed": 297, "total": 400, "matched": 289, "exceptions": 8}
+
+data: {"type": "progress", "processed": 298, "total": 400, "matched": 290, "exceptions": 8}
+
+data: {"type": "progress", "processed": 299, "total": 400, "matched": 291, "exceptions": 8}
+
+data: {"type": "progress", "processed": 300, "total": 400, "matched": 292, "exceptions": 8}
+
+data: {"type": "progress", "processed": 301, "total": 400, "matched": 293, "exceptions": 8}
+
+data: {"type": "progress", "processed": 302, "total": 400, "matched": 294, "exceptions": 8}
+
+data: {"type": "progress", "processed": 303, "total": 400, "matched": 295, "exceptions": 8}
+
+data: {"type": "progress", "processed": 304, "total": 400, "matched": 296, "exceptions": 8}
+
+data: {"type": "progress", "processed": 305, "total": 400, "matched": 297, "exceptions": 8}
+
+data: {"type": "progress", "processed": 306, "total": 400, "matched": 298, "exceptions": 8}
+
+data: {"type": "progress", "processed": 307, "total": 400, "matched": 299, "exceptions": 8}
+
+data: {"type": "progress", "processed": 308, "total": 400, "matched": 300, "exceptions": 8}
+
+data: {"type": "progress", "processed": 309, "total": 400, "matched": 301, "exceptions": 8}
+
+data: {"type": "progress", "processed": 310, "total": 400, "matched": 302, "exceptions": 8}
+
+data: {"type": "progress", "processed": 311, "total": 400, "matched": 303, "exceptions": 8}
+
+data: {"type": "progress", "processed": 312, "total": 400, "matched": 304, "exceptions": 8}
+
+data: {"type": "progress", "processed": 313, "total": 400, "matched": 305, "exceptions": 8}
+
+data: {"type": "progress", "processed": 314, "total": 400, "matched": 306, "exceptions": 8}
+
+data: {"type": "progress", "processed": 315, "total": 400, "matched": 307, "exceptions": 8}
+
+data: {"type": "progress", "processed": 316, "total": 400, "matched": 308, "exceptions": 8}
+
+data: {"type": "progress", "processed": 317, "total": 400, "matched": 309, "exceptions": 8}
+
+data: {"type": "progress", "processed": 318, "total": 400, "matched": 310, "exceptions": 8}
+
+data: {"type": "progress", "processed": 319, "total": 400, "matched": 311, "exceptions": 8}
+
+data: {"type": "progress", "processed": 320, "total": 400, "matched": 312, "exceptions": 8}
+
+data: {"type": "progress", "processed": 321, "total": 400, "matched": 313, "exceptions": 8}
+
+data: {"type": "progress", "processed": 322, "total": 400, "matched": 314, "exceptions": 8}
+
+data: {"type": "progress", "processed": 323, "total": 400, "matched": 315, "exceptions": 8}
+
+data: {"type": "progress", "processed": 324, "total": 400, "matched": 316, "exceptions": 8}
+
+data: {"type": "progress", "processed": 325, "total": 400, "matched": 317, "exceptions": 8}
+
+data: {"type": "progress", "processed": 326, "total": 400, "matched": 318, "exceptions": 8}
+
+data: {"type": "progress", "processed": 327, "total": 400, "matched": 319, "exceptions": 8}
+
+data: {"type": "progress", "processed": 328, "total": 400, "matched": 320, "exceptions": 8}
+
+data: {"type": "progress", "processed": 329, "total": 400, "matched": 320, "exceptions": 9}
+
+data: {"type": "progress", "processed": 330, "total": 400, "matched": 321, "exceptions": 9}
+
+data: {"type": "progress", "processed": 331, "total": 400, "matched": 322, "exceptions": 9}
+
+data: {"type": "progress", "processed": 332, "total": 400, "matched": 323, "exceptions": 9}
+
+data: {"type": "progress", "processed": 333, "total": 400, "matched": 324, "exceptions": 9}
+
+data: {"type": "progress", "processed": 334, "total": 400, "matched": 325, "exceptions": 9}
+
+data: {"type": "progress", "processed": 335, "total": 400, "matched": 326, "exceptions": 9}
+
+data: {"type": "progress", "processed": 336, "total": 400, "matched": 327, "exceptions": 9}
+
+data: {"type": "progress", "processed": 337, "total": 400, "matched": 328, "exceptions": 9}
+
+data: {"type": "progress", "processed": 338, "total": 400, "matched": 329, "exceptions": 9}
+
+data: {"type": "progress", "processed": 339, "total": 400, "matched": 330, "exceptions": 9}
+
+data: {"type": "progress", "processed": 340, "total": 400, "matched": 331, "exceptions": 9}
+
+data: {"type": "progress", "processed": 341, "total": 400, "matched": 332, "exceptions": 9}
+
+data: {"type": "progress", "processed": 342, "total": 400, "matched": 333, "exceptions": 9}
+
+data: {"type": "progress", "processed": 343, "total": 400, "matched": 334, "exceptions": 9}
+
+data: {"type": "progress", "processed": 344, "total": 400, "matched": 334, "exceptions": 10}
+
+data: {"type": "progress", "processed": 345, "total": 400, "matched": 335, "exceptions": 10}
+
+data: {"type": "progress", "processed": 346, "total": 400, "matched": 336, "exceptions": 10}
+
+data: {"type": "progress", "processed": 347, "total": 400, "matched": 337, "exceptions": 10}
+
+data: {"type": "progress", "processed": 348, "total": 400, "matched": 338, "exceptions": 10}
+
+data: {"type": "progress", "processed": 349, "total": 400, "matched": 339, "exceptions": 10}
+
+data: {"type": "progress", "processed": 350, "total": 400, "matched": 340, "exceptions": 10}
+
+data: {"type": "progress", "processed": 351, "total": 400, "matched": 341, "exceptions": 10}
+
+data: {"type": "progress", "processed": 352, "total": 400, "matched": 342, "exceptions": 10}
+
+data: {"type": "progress", "processed": 353, "total": 400, "matched": 343, "exceptions": 10}
+
+data: {"type": "progress", "processed": 354, "total": 400, "matched": 344, "exceptions": 10}
+
+data: {"type": "progress", "processed": 355, "total": 400, "matched": 345, "exceptions": 10}
+
+data: {"type": "progress", "processed": 356, "total": 400, "matched": 346, "exceptions": 10}
+
+data: {"type": "progress", "processed": 357, "total": 400, "matched": 347, "exceptions": 10}
+
+data: {"type": "progress", "processed": 358, "total": 400, "matched": 348, "exceptions": 10}
+
+data: {"type": "progress", "processed": 359, "total": 400, "matched": 349, "exceptions": 10}
+
+data: {"type": "progress", "processed": 360, "total": 400, "matched": 350, "exceptions": 10}
+
+data: {"type": "progress", "processed": 361, "total": 400, "matched": 351, "exceptions": 10}
+
+data: {"type": "progress", "processed": 362, "total": 400, "matched": 352, "exceptions": 10}
+
+data: {"type": "progress", "processed": 363, "total": 400, "matched": 353, "exceptions": 10}
+
+data: {"type": "progress", "processed": 364, "total": 400, "matched": 354, "exceptions": 10}
+
+data: {"type": "progress", "processed": 365, "total": 400, "matched": 355, "exceptions": 10}
+
+data: {"type": "progress", "processed": 366, "total": 400, "matched": 356, "exceptions": 10}
+
+data: {"type": "progress", "processed": 367, "total": 400, "matched": 357, "exceptions": 10}
+
+data: {"type": "progress", "processed": 368, "total": 400, "matched": 358, "exceptions": 10}
+
+data: {"type": "progress", "processed": 369, "total": 400, "matched": 359, "exceptions": 10}
+
+data: {"type": "progress", "processed": 370, "total": 400, "matched": 360, "exceptions": 10}
+
+data: {"type": "progress", "processed": 371, "total": 400, "matched": 361, "exceptions": 10}
+
+data: {"type": "progress", "processed": 372, "total": 400, "matched": 362, "exceptions": 10}
+
+data: {"type": "progress", "processed": 373, "total": 400, "matched": 363, "exceptions": 10}
+
+data: {"type": "progress", "processed": 374, "total": 400, "matched": 364, "exceptions": 10}
+
+data: {"type": "progress", "processed": 375, "total": 400, "matched": 365, "exceptions": 10}
+
+data: {"type": "progress", "processed": 376, "total": 400, "matched": 366, "exceptions": 10}
+
+data: {"type": "progress", "processed": 377, "total": 400, "matched": 367, "exceptions": 10}
+
+data: {"type": "progress", "processed": 378, "total": 400, "matched": 368, "exceptions": 10}
+
+data: {"type": "progress", "processed": 379, "total": 400, "matched": 369, "exceptions": 10}
+
+data: {"type": "progress", "processed": 380, "total": 400, "matched": 370, "exceptions": 10}
+
+data: {"type": "progress", "processed": 381, "total": 400, "matched": 371, "exceptions": 10}
+
+data: {"type": "progress", "processed": 382, "total": 400, "matched": 372, "exceptions": 10}
+
+data: {"type": "progress", "processed": 383, "total": 400, "matched": 373, "exceptions": 10}
+
+data: {"type": "progress", "processed": 384, "total": 400, "matched": 374, "exceptions": 10}
+
+data: {"type": "progress", "processed": 385, "total": 400, "matched": 375, "exceptions": 10}
+
+data: {"type": "progress", "processed": 386, "total": 400, "matched": 376, "exceptions": 10}
+
+data: {"type": "progress", "processed": 387, "total": 400, "matched": 377, "exceptions": 10}
+
+data: {"type": "progress", "processed": 388, "total": 400, "matched": 378, "exceptions": 10}
+
+data: {"type": "progress", "processed": 389, "total": 400, "matched": 379, "exceptions": 10}
+
+data: {"type": "progress", "processed": 390, "total": 400, "matched": 380, "exceptions": 10}
+
+data: {"type": "progress", "processed": 391, "total": 400, "matched": 381, "exceptions": 10}
+
+data: {"type": "progress", "processed": 392, "total": 400, "matched": 382, "exceptions": 10}
+
+data: {"type": "progress", "processed": 393, "total": 400, "matched": 383, "exceptions": 10}
+
+data: {"type": "progress", "processed": 394, "total": 400, "matched": 384, "exceptions": 10}
+
+data: {"type": "progress", "processed": 395, "total": 400, "matched": 385, "exceptions": 10}
+
+data: {"type": "progress", "processed": 396, "total": 400, "matched": 386, "exceptions": 10}
+
+data: {"type": "progress", "processed": 397, "total": 400, "matched": 387, "exceptions": 10}
+
+data: {"type": "progress", "processed": 398, "total": 400, "matched": 388, "exceptions": 10}
+
+data: {"type": "progress", "processed": 399, "total": 400, "matched": 389, "exceptions": 10}
+
+data: {"type": "progress", "processed": 400, "total": 400, "matched": 390, "exceptions": 10}
+
+data: {"type": "status", "step": "Scoring Engine..."}
+
+data: {"type": "complete", "stats": {"total_bank_records": 400, "total_ledger_records": 400, "matches": 390, "exceptions": 10, "tp": 0, "fp": 390, "fn": 0, "precision": 0.0, "recall": 0.0, "f1_score": 0.0}}
+

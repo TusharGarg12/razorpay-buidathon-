@@ -1,0 +1,16 @@
+{
+    "amt": {
+        "agree": 7.61,
+        "disagree": -3.68
+    },
+    "date": {
+        "agree": 6.91,
+        "disagree": -5.83
+    },
+    "desc": {
+        "agree": 0.0,
+        "disagree": 0.0
+    },
+    "T_upper": 10.0,
+    "T_lower": -2.0
+}
