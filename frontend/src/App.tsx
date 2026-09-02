@@ -1000,14 +1000,15 @@ function ExceptionsPanel({ complete, excData }: { complete: boolean, excData: Ex
                   <div style={{ fontSize: 12, color: "#0f172a", fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, marginBottom: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{exc.record}</div>
                   <div style={{ fontSize: 11, color: "#94a3b8" }}>{exc.reason}</div>
                 </div>
-                <span style={{
+                <span title={exc.code} style={{
                   display: "inline-flex", alignItems: "center", gap: 5,
                   padding: "3px 9px", borderRadius: 6, fontSize: 9, fontWeight: 700,
                   background: meta.bg, border: `1px solid ${meta.dot}22`, color: meta.color,
                   fontFamily: "'JetBrains Mono',monospace", letterSpacing: "0.06em", flexShrink: 0,
+                  maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"
                 }}>
                   <span style={{ width: 5, height: 5, borderRadius: "50%", background: meta.dot, display: "inline-block", flexShrink: 0 }} />
-                  {exc.code}
+                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{exc.code}</span>
                 </span>
                 <div style={{ flexShrink: 0 }}>
                   <Avatar seed={AVATAR_SEEDS[i % AVATAR_SEEDS.length]} size={26} border="#e2e8f0" index={i} />
