@@ -1,4 +1,5 @@
 *.csv
+!data/ground_truth.csv
 weights.json
 exports/
 .env

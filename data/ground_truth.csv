@@ -1,0 +1,40 @@
+bank_txn_id,ledger_txn_id,mismatch_type,notes
+B001,L001,exact,Exact match
+B002,L002,exact,Exact match
+B003,L003,exact,Exact match
+B004,L004,exact,Exact match
+B005,L005,exact,Exact match
+B006,L006,exact,Exact match
+B007,L007,exact,Exact match
+B008,L008,exact,Exact match
+B009,L009,exact,Exact match
+B010,L010,exact,Exact match
+B011,L011,exact,Exact match
+B012,L012,exact,Exact match
+B013,L013,exact,Exact match
+B014,L014,exact,Exact match
+B015,L015,exact,Exact match
+B016,L016,exact,Exact match
+B017,L017,exact,Exact match
+B018,L018,exact,Exact match
+B019,L019,amount_fee,Fee deducted
+B020,L020,amount_fee,Fee deducted
+B021,L021,amount_fee,Fee deducted
+B022,L022,timing_delay,Settlement delay
+B023,L023,timing_delay,Settlement delay
+B024,L024,timing_delay,Settlement delay
+B025,L025,batching,Many to 1
+B025,L026,batching,Many to 1
+B025,L027,batching,Many to 1
+B026,L028,name_mismatch,Case/formatting
+B027,L029,name_mismatch,Case/formatting
+B028,L030,name_mismatch,Case/formatting
+B029,L031,fx_conversion,Currency match
+B030,L032,fx_conversion,Currency match
+B031,L033,partial,1 to many
+B032,L033,partial,1 to many
+B033,L034,partial,1 to many
+B034,L034,partial,1 to many
+B035,L035,typo,LLM spelling fix
+B036,L036,typo,LLM spelling fix
+B037,L037,duplicate,Should catch dup
