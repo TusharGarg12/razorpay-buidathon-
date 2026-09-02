@@ -39,6 +39,7 @@ Answer concisely and professionally based on the context. If you don't know, say
                     "prompt": prompt,
                     "stream": False,
                 },
+                headers={"ngrok-skip-browser-warning": "1"}
             )
             resp.raise_for_status()
             return resp.json().get("response", "Sorry, I couldn't generate a response.")
@@ -51,7 +52,16 @@ Answer concisely and professionally based on the context. If you don't know, say
                     )
                     return response.text
                 except Exception as e:
-                    return f"Error connecting to Ollama, and Gemini fallback failed: {str(e)}"
-            return "Error connecting to Ollama, and no GEMINI_API_KEY provided for fallback."
+                    return f"Error connecting to Ollama at {self.ollama_host}, and Gemini fallback failed: {str(e)}"
+            return f"Error connecting to Ollama at {self.ollama_host}, and no GEMINI_API_KEY provided for fallback."
         except Exception as e:
-            return f"Error from Ollama: {str(e)}"
+            if self.gemini_client:
+                try:
+                    response = self.gemini_client.models.generate_content(
+                        model="gemini-3.6-flash",
+                        contents=prompt,
+                    )
+                    return response.text
+                except Exception as inner_e:
+                    return f"Ollama failed with {type(e).__name__}: {str(e)}. Gemini fallback also failed: {str(inner_e)}"
+            return f"Error from Ollama ({self.ollama_host}): {type(e).__name__}: {str(e)}"

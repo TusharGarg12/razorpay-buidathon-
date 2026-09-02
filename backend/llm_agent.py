@@ -165,6 +165,7 @@ class LLMAgent:
                 "stream": False,
                 "format": "json",
             },
+            headers={"ngrok-skip-browser-warning": "1"}
         )
         resp.raise_for_status()
         return resp.json().get("response", "{}")
