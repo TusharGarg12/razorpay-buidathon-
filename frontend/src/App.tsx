@@ -1269,10 +1269,10 @@ function QAChat({ open, onClose }: { open: boolean; onClose: () => void }) {
 const API_BASE = (import.meta as any).env?.VITE_API_URL || "http://localhost:8000";
 
 const INIT_METRICS = [
-  { label: "MATCH RATE",    value: 0,  unit: "%", icon: TrendingUp, color: "#0ea5e9", bg: "#f0f9ff", delay: 0.05 },
-  { label: "TOTAL RECORDS", value: 0,  unit: "",  icon: Target,     color: "#818cf8", bg: "#eef2ff", delay: 0.12 },
-  { label: "MATCHED",       value: 0,  unit: "",  icon: Shield,     color: "#f472b6", bg: "#fdf2f8", delay: 0.19 },
-  { label: "EXCEPTIONS",    value: 0,  unit: "",  icon: BarChart3,  color: "#34d399", bg: "#ecfdf5", delay: 0.26 },
+  { label: "MATCH RATE",  value: 0,  unit: "%", icon: TrendingUp, color: "#0ea5e9", bg: "#f0f9ff", delay: 0.05 },
+  { label: "PRECISION",   value: 0,  unit: "%", icon: Target,     color: "#818cf8", bg: "#eef2ff", delay: 0.12 },
+  { label: "RECALL",      value: 0,  unit: "%", icon: Shield,     color: "#f472b6", bg: "#fdf2f8", delay: 0.19 },
+  { label: "F1 SCORE",    value: 0,  unit: "%", icon: BarChart3,  color: "#34d399", bg: "#ecfdf5", delay: 0.26 },
 ];
 
 export default function App() {
@@ -1414,10 +1414,10 @@ export default function App() {
               const st: LiveStats = data.stats;
               setLiveStats(st);
               setMetrics([
-                { label: "MATCH RATE",    value: Math.round((st.matches / Math.max(1, st.total_bank_records)) * 100), unit: "%", icon: TrendingUp, color: "#0ea5e9", bg: "#f0f9ff", delay: 0.05 },
-                { label: "TOTAL RECORDS", value: st.total_bank_records, unit: "", icon: Target,    color: "#818cf8", bg: "#eef2ff", delay: 0.12 },
-                { label: "MATCHED",       value: st.matches,            unit: "", icon: Shield,    color: "#f472b6", bg: "#fdf2f8", delay: 0.19 },
-                { label: "EXCEPTIONS",    value: st.exceptions,         unit: "", icon: BarChart3, color: "#34d399", bg: "#ecfdf5", delay: 0.26 },
+                { label: "MATCH RATE", value: Math.round((st.matches / Math.max(1, st.total_bank_records)) * 100), unit: "%", icon: TrendingUp, color: "#0ea5e9", bg: "#f0f9ff", delay: 0.05 },
+                { label: "PRECISION",  value: Math.round(st.precision * 100),  unit: "%", icon: Target,    color: "#818cf8", bg: "#eef2ff", delay: 0.12 },
+                { label: "RECALL",     value: Math.round(st.recall * 100),     unit: "%", icon: Shield,    color: "#f472b6", bg: "#fdf2f8", delay: 0.19 },
+                { label: "F1 SCORE",   value: Math.round(st.f1_score * 100),   unit: "%", icon: BarChart3, color: "#34d399", bg: "#ecfdf5", delay: 0.26 },
               ]);
 
               // populate exceptions from the complete payload

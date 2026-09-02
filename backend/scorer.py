@@ -5,7 +5,7 @@ from models import ReconciliationStats
 
 # Default ground truth file resolved relative to this source file so the path
 # works regardless of the working directory uvicorn is started from.
-_DEFAULT_GT = os.path.join(os.path.dirname(__file__), "data", "ground_truth.csv")
+_DEFAULT_GT = os.path.join(os.path.dirname(__file__), "..", "data", "ground_truth.csv")
 
 class PipelineScorer:
     def __init__(self, ground_truth_file: str = _DEFAULT_GT):
