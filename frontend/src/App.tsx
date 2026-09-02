@@ -1125,7 +1125,7 @@ function QAChat({ open, onClose }: { open: boolean; onClose: () => void }) {
     setInput(""); setTyping(true);
     
     try {
-      const res = await fetch("http://localhost:8000/api/qa", {
+      const res = await fetch(`${API_BASE}/api/qa`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: msg })

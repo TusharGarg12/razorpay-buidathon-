@@ -11,6 +11,15 @@ class QAAgent:
         self.ollama_host = ollama_host
         self.ollama_model = ollama_model
         self.client = httpx.Client(timeout=120.0)
+        
+        self.gemini_client = None
+        api_key = os.getenv("GEMINI_API_KEY")
+        if api_key:
+            try:
+                from google import genai
+                self.gemini_client = genai.Client(api_key=api_key)
+            except Exception as e:
+                print(f"[QAAgent] Failed to init Gemini: {e}")
 
     def ask(self, query: str, context: str) -> str:
         prompt = f"""You are a highly capable Settlement Q&A assistant for the AI Finance Controller.
@@ -34,6 +43,15 @@ Answer concisely and professionally based on the context. If you don't know, say
             resp.raise_for_status()
             return resp.json().get("response", "Sorry, I couldn't generate a response.")
         except httpx.ConnectError:
-            return "Error connecting to Ollama. Is the Ollama service running on localhost:11434?"
+            if self.gemini_client:
+                try:
+                    response = self.gemini_client.models.generate_content(
+                        model="gemini-2.5-flash",
+                        contents=prompt,
+                    )
+                    return response.text
+                except Exception as e:
+                    return f"Error connecting to Ollama, and Gemini fallback failed: {str(e)}"
+            return "Error connecting to Ollama, and no GEMINI_API_KEY provided for fallback."
         except Exception as e:
             return f"Error from Ollama: {str(e)}"
