@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import {
   TrendingUp, Target, Shield, BarChart3, CheckCircle2,
   AlertTriangle, Download, Activity, MessageSquare, X, Send,
-  Sparkles, Upload, Database, RefreshCw, Rocket,
+  Sparkles, Upload, RefreshCw, Rocket,
 } from "lucide-react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
@@ -45,9 +45,20 @@ function AvatarStack({ seeds, size = 34, overlap = 10 }: { seeds: string[]; size
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Stage = { id: string; label: string; emoji: string; done: boolean; active: boolean; count?: number };
-type MatchRow = { id: string; bank: string; ledger: string; amount: string; tier: string; confidence: number; date: string };
+type MatchRow = {
+  id: string;
+  bank: string;
+  ledger: string;       // comma-joined ledger IDs
+  amount: string;
+  tier: string;         // "Tier 1" | "Tier 2" | "Tier 3"
+  matchType: string;    // "1:1" | "1:N" | "N:1" | "N:M"
+  confidence: number;   // 0-100
+  llmSource?: string;   // "ollama" | "gemini" | "heuristic" | null
+  date: string;
+};
 type ExcRow = { id: string; record: string; amount: string; reason: string; code: string };
 type ChatMsg = { role: "user" | "ai"; text: string; ts: string };
+type LiveStats = { matches: number; total_bank_records: number; precision: number; recall: number; f1_score: number; exceptions: number; match_type_counts?: Record<string,number> };
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const STAGES: Stage[] = [
@@ -58,48 +69,38 @@ const STAGES: Stage[] = [
   { id: "tier3",     label: "AI Match",     emoji: "✨", done: false, active: false, count: 0 },
 ];
 
-const MATCH_ROWS: MatchRow[] = [
-  { id: "M001", bank: "ACH-PAYROLL-2024Q4",  ledger: "Payroll Dec 2024",        amount: "$48,320.00",  tier: "Tier 1", confidence: 99, date: "2024-12-31" },
-  { id: "M002", bank: "WIRE-VENDOR-ACME",    ledger: "ACME Corp Invoice #1821", amount: "$12,450.00",  tier: "Tier 1", confidence: 97, date: "2024-12-30" },
-  { id: "M003", bank: "CC-CHG-STRIPE-001",   ledger: "Stripe Processing Fee",   amount: "$3,214.88",   tier: "Tier 2", confidence: 91, date: "2024-12-29" },
-  { id: "M004", bank: "DEP-CLNT-GLOBEX",     ledger: "Globex Q4 Retainer",      amount: "$25,000.00",  tier: "Tier 1", confidence: 99, date: "2024-12-28" },
-  { id: "M005", bank: "CHK-0042-UTIL",       ledger: "Office Utilities Nov",    amount: "$1,892.40",   tier: "Tier 2", confidence: 84, date: "2024-12-27" },
-  { id: "M006", bank: "ACH-SaaS-CLOUD",      ledger: "AWS Infrastructure Jan",  amount: "$7,631.22",   tier: "Tier 3", confidence: 72, date: "2024-12-26" },
-  { id: "M007", bank: "WIRE-INT-XFER-001",   ledger: "Inter-account Transfer",  amount: "$100,000.00", tier: "Tier 1", confidence: 99, date: "2024-12-25" },
-  { id: "M008", bank: "CC-REFUND-AMZ-88",    ledger: "Amazon Refund — Office",  amount: "$-234.50",    tier: "Tier 2", confidence: 88, date: "2024-12-24" },
-];
-
-const EXCEPTIONS: ExcRow[] = [
-  { id: "E001", record: "UNKN-DEP-20241218", amount: "$5,421.00",  reason: "No matching ledger entry found",          code: "NO_MATCH"  },
-  { id: "E002", record: "ACH-PARTIAL-0099",  amount: "$2,100.00",  reason: "Amount mismatch exceeds tolerance (±$50)",code: "AMT_DELTA" },
-  { id: "E003", record: "WIRE-DUPE-CHECK",   amount: "$18,000.00", reason: "Potential duplicate transaction",         code: "DUPLICATE" },
-  { id: "E004", record: "DEP-DATE-SLIP-003", amount: "$9,000.00",  reason: "Date mismatch > 5 business days",        code: "DATE_SLIP" },
-  { id: "E005", record: "CHK-VOID-2024Q4",   amount: "$450.00",    reason: "Voided check — ledger still open",       code: "VOID_OPEN" },
-];
-
-const CHART_DATA = [
-  { name: "Exact Match", value: 28, color: "#38bdf8" },
-  { name: "Fuzzy Name",  value: 12, color: "#818cf8" },
-  { name: "Amt Delta",   value: 8,  color: "#fb923c" },
-  { name: "Date Slip",   value: 5,  color: "#f472b6" },
-  { name: "Duplicate",   value: 4,  color: "#34d399" },
-  { name: "Unmatched",   value: 3,  color: "#cbd5e1" },
-];
-
 const TIER_COLORS: Record<string, string> = { "Tier 1": "#0ea5e9", "Tier 2": "#818cf8", "Tier 3": "#f472b6" };
-const CODE_META: Record<string, { color: string; bg: string; dot: string; emoji: string }> = {
-  NO_MATCH:  { color: "#64748b", bg: "#f8fafc", dot: "#ef4444", emoji: "❓" },
-  AMT_DELTA: { color: "#92400e", bg: "#fef9ee", dot: "#f59e0b", emoji: "💰" },
-  DUPLICATE: { color: "#5b21b6", bg: "#f5f3ff", dot: "#8b5cf6", emoji: "🔄" },
-  DATE_SLIP: { color: "#9a3412", bg: "#fff8f5", dot: "#fb923c", emoji: "📅" },
-  VOID_OPEN: { color: "#0369a1", bg: "#f0f9ff", dot: "#38bdf8", emoji: "✕" },
+const MATCH_TYPE_META: Record<string, { color: string; bg: string; label: string }> = {
+  "1:1": { color: "#0ea5e9", bg: "#f0f9ff",  label: "1:1"  },
+  "1:N": { color: "#818cf8", bg: "#eef2ff",  label: "1:N"  },
+  "N:1": { color: "#f472b6", bg: "#fdf2f8",  label: "N:1"  },
+  "N:M": { color: "#f59e0b", bg: "#fffbeb",  label: "N:M"  },
 };
+const LLM_SOURCE_META: Record<string, { color: string; bg: string; label: string }> = {
+  ollama:    { color: "#16a34a", bg: "#f0fdf4",  label: "🦙 Ollama"   },
+  gemini:    { color: "#0369a1", bg: "#f0f9ff",  label: "✨ Gemini"   },
+  heuristic: { color: "#92400e", bg: "#fef9ee",  label: "📏 Heuristic" },
+};
+const CODE_META: Record<string, { color: string; bg: string; dot: string; emoji: string }> = {
+  NO_MATCH:              { color: "#64748b", bg: "#f8fafc", dot: "#ef4444", emoji: "❓" },
+  NO_CANDIDATE:          { color: "#64748b", bg: "#f8fafc", dot: "#ef4444", emoji: "❓" },
+  AMT_DELTA:             { color: "#92400e", bg: "#fef9ee", dot: "#f59e0b", emoji: "💰" },
+  DUPLICATE:             { color: "#5b21b6", bg: "#f5f3ff", dot: "#8b5cf6", emoji: "🔄" },
+  DATE_SLIP:             { color: "#9a3412", bg: "#fff8f5", dot: "#fb923c", emoji: "📅" },
+  VOID_OPEN:             { color: "#0369a1", bg: "#f0f9ff", dot: "#38bdf8", emoji: "✕"  },
+  FS_WEIGHT_LOW:         { color: "#0f172a", bg: "#f8fafc", dot: "#94a3b8", emoji: "⚖️" },
+  AMBIGUOUS_MULTI:       { color: "#5b21b6", bg: "#f5f3ff", dot: "#8b5cf6", emoji: "🔀" },
+  UNKNOWN_EXCEPTION:     { color: "#64748b", bg: "#f8fafc", dot: "#94a3b8", emoji: "⚠️" },
+  LLM_UNRESOLVED:        { color: "#9a3412", bg: "#fff8f5", dot: "#f97316", emoji: "🤖" },
+  NO_UNCONSUMED_CANDIDATES: { color: "#64748b", bg: "#f8fafc", dot: "#94a3b8", emoji: "🗑️" },
+};
+const DEFAULT_CODE_META = { color: "#64748b", bg: "#f8fafc", dot: "#94a3b8", emoji: "⚠️" };
 
 const CANNED: Record<string, string> = {
-  default:   "Great question! Most exceptions come from timing differences between bank clearance and ledger posting. I'd start with E001 and E003.",
-  exception: "5 exceptions need attention. E001 has no matching ledger entry — possible unrecorded deposit. E003 looks like a duplicate wire transfer.",
-  match:     "92.3% match rate overall. Tier 1 matched 47 records exactly, Tier 2 caught 9 more with fuzzy logic, and AI resolved 4 tricky ones.",
-  tier:      "Tier 1 uses exact hash matching. Tier 2 applies fuzzy string similarity (Levenshtein ≥ 0.82). Tier 3 asks the AI to reason about semantic equivalence.",
+  default:   "Most exceptions come from timing differences between bank clearance and ledger posting.",
+  exception: "Check NO_CANDIDATE exceptions first — they indicate records with no ledger counterpart.",
+  match:     "Tier 1 handles exact matches, Tier 2 uses Jaro-Winkler + Fellegi-Sunter weights, Tier 3 uses Ollama (Qwen2.5) with Gemini as fallback.",
+  tier:      "Tier 1: exact amount+date. Tier 2: fuzzy JW ≥ 0.85 + FS weight. Tier 3: LLM (Ollama primary, Gemini fallback). 1:N/N:1/N:M group matching runs after 1:1 pass.",
 };
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
@@ -250,7 +251,7 @@ function TopNav({ onChat, activeTab, onChangeTab }: { onChat: () => void; active
 }
 
 // ─── Hero section ─────────────────────────────────────────────────────────────
-function Hero({ onRun, running }: { onRun: () => void; running: boolean }) {
+function Hero({ onRun, running, liveStats }: { onRun: () => void; running: boolean; liveStats: LiveStats | null }) {
   return (
     <div style={{
       background: "linear-gradient(160deg, #bae6fd 0%, #93c5fd 40%, #c7d2fe 100%)",
@@ -399,9 +400,9 @@ function Hero({ onRun, running }: { onRun: () => void; running: boolean }) {
 
           {/* Floating stat chips */}
           {[
-            { label: "Match rate", value: "92.3%", icon: "🎯", top: 6,   right: 148, delay: "0s" },
-            { label: "Records",    value: "60",     icon: "📋", top: 152, left: 0,   delay: "0.25s" },
-            { label: "Speed",      value: "5.4s",   icon: "⚡", bottom: 40, right: 0, delay: "0.5s" },
+            { label: "Match rate", value: liveStats ? `${Math.round((liveStats.matches / Math.max(1, liveStats.total_bank_records)) * 100)}%` : "—", icon: "🎯", top: 6,   right: 148, delay: "0s" },
+            { label: "Records",    value: liveStats ? String(liveStats.total_bank_records) : "—",     icon: "📋", top: 152, left: 0,   delay: "0.25s" },
+            { label: "Exceptions", value: liveStats ? String(liveStats.exceptions) : "—",   icon: "⚡", bottom: 40, right: 0, delay: "0.5s" },
           ].map(chip => (
             <div key={chip.label} className="float-anim" style={{
               position: "absolute",
@@ -431,11 +432,25 @@ function Hero({ onRun, running }: { onRun: () => void; running: boolean }) {
 }
 
 // ─── Upload Zone ──────────────────────────────────────────────────────────────
-function UploadZone({ onRun, running }: { onRun: () => void; running: boolean }) {
+function UploadZone({ onRun, running }: { onRun: (files: File[]) => void; running: boolean }) {
   const [drag, setDrag] = useState(false);
-  const [files, setFiles] = useState<string[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
+  const [sizeError, setSizeError] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const v = useInView(ref);
+
+  const handleFiles = (newFiles: File[]) => {
+    if (newFiles.some(f => f.size > 100 * 1024 * 1024)) {
+      setSizeError("Files must be under 100MB.");
+      return;
+    }
+    setSizeError(null);
+    setFiles(newFiles);
+  };
+
+  // Allow running with no files (uses demo data); single file also valid (BenchRec)
+  const isReady = true;
 
   return (
     <div ref={ref} className={v ? "anim-bounce-in" : ""} style={{ opacity: v ? undefined : 0, animationDelay: "0.1s" }}>
@@ -454,9 +469,10 @@ function UploadZone({ onRun, running }: { onRun: () => void; running: boolean })
         </div>
 
         <div
+          onClick={() => fileInputRef.current?.click()}
           onDragOver={e => { e.preventDefault(); setDrag(true); }}
           onDragLeave={() => setDrag(false)}
-          onDrop={e => { e.preventDefault(); setDrag(false); setFiles(Array.from(e.dataTransfer.files).map(f => f.name)); }}
+          onDrop={e => { e.preventDefault(); setDrag(false); handleFiles(Array.from(e.dataTransfer.files)); }}
           style={{
             border: `2px dashed ${drag ? "#0ea5e9" : "#e2e8f0"}`,
             borderRadius: 16, padding: "28px 20px", textAlign: "center",
@@ -470,35 +486,51 @@ function UploadZone({ onRun, running }: { onRun: () => void; running: boolean })
             {files.length ? "✅" : drag ? "🎯" : "☁️"}
           </div>
           {files.length > 0
-            ? files.map(f => <div key={f} style={{ fontSize: 12, color: "#0ea5e9", fontFamily: "'JetBrains Mono',monospace", marginBottom: 2 }}>✓ {f}</div>)
+            ? files.map(f => <div key={f.name} style={{ fontSize: 12, color: "#0ea5e9", fontFamily: "'JetBrains Mono',monospace", marginBottom: 2 }}>✓ {f.name}</div>)
             : <>
                 <p style={{ color: "#94a3b8", fontSize: 13, margin: "0 0 4px" }}>
-                  Drop <span style={{ color: "#0f172a", fontWeight: 600 }}>bank.csv</span> &amp; <span style={{ color: "#0f172a", fontWeight: 600 }}>ledger.csv</span>
+                  Drop <span style={{ color: "#0f172a", fontWeight: 600 }}>bank.csv</span> &amp; <span style={{ color: "#0f172a", fontWeight: 600 }}>ledger.csv</span>, or a single <span style={{ color: "#0f172a", fontWeight: 600 }}>combined file</span>
                 </p>
                 <p style={{ color: "#cbd5e1", fontSize: 11, margin: 0 }}>or click to browse</p>
               </>
           }
+          <input
+            type="file"
+            multiple
+            accept=".csv"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={e => {
+              if (e.target.files && e.target.files.length > 0) {
+                handleFiles(Array.from(e.target.files));
+              }
+            }}
+          />
         </div>
 
-        <button onClick={onRun} disabled={running} style={{
+        <button onClick={() => onRun(files)} disabled={running || !isReady} style={{
           width: "100%", padding: "13px 20px", borderRadius: 50,
-          background: running ? "#e2e8f0" : "#0f172a",
-          border: "none", cursor: running ? "not-allowed" : "pointer",
-          color: running ? "#94a3b8" : "#fff",
+          background: (running || !isReady) ? "#e2e8f0" : "#0f172a",
+          border: "none", cursor: (running || !isReady) ? "not-allowed" : "pointer",
+          color: (running || !isReady) ? "#94a3b8" : "#fff",
           fontWeight: 700, fontSize: 14,
           fontFamily: "'Plus Jakarta Sans',sans-serif",
           display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
           boxShadow: running ? "none" : "0 4px 16px rgba(15,23,42,0.2)",
           transition: "all 0.25s",
         }}
-          onMouseEnter={e => { if (!running) { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.02)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 24px rgba(15,23,42,0.28)"; } }}
-          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = running ? "none" : "0 4px 16px rgba(15,23,42,0.2)"; }}
+          onMouseEnter={e => { if (!running && isReady) { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.02)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 24px rgba(15,23,42,0.28)"; } }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = (running || !isReady) ? "none" : "0 4px 16px rgba(15,23,42,0.2)"; }}
         >
           {running
             ? <><RefreshCw size={14} style={{ animation: "spin 1s linear infinite" }} /> Matching…</>
-            : <><Rocket size={14} /> Run Demo</>
+            : files.length > 0
+              ? <><Rocket size={14} /> Run Reconciliation</>
+              : <><Rocket size={14} /> Run Demo</>
           }
         </button>
+        {sizeError && <div style={{ color: "#ef4444", fontSize: 12, marginTop: 10, textAlign: "center", fontWeight: 500 }}>{sizeError}</div>}
+        {files.length === 1 && <div style={{ color: "#0ea5e9", fontSize: 11, marginTop: 10, textAlign: "center", fontWeight: 500 }}>Single file detected — will auto-split A/B sides (BenchRec format)</div>}
       </div>
     </div>
   );
@@ -535,7 +567,6 @@ function PipelineProgress({ stages }: { stages: Stage[] }) {
   ];
   const activeIdx = stages.findIndex(s => s.active);
   const avatarIdx = activeIdx >= 0 ? activeIdx : Math.min(done, stages.length - 1);
-  const avatarNode = nodes[avatarIdx];
   const isTop = (i: number) => i % 2 === 0;
 
   useEffect(() => {
@@ -727,8 +758,12 @@ function MetricCard({ label, value, unit, icon: Icon, color, bg, active, delay }
 }
 
 // ─── Success Banner ───────────────────────────────────────────────────────────
-function SuccessBanner({ show }: { show: boolean }) {
-  if (!show) return null;
+function SuccessBanner({ show, stats }: { show: boolean; stats: LiveStats | null }) {
+  if (!show || !stats) return null;
+  const matchRate = stats.total_bank_records > 0
+    ? Math.round((stats.matches / stats.total_bank_records) * 100)
+    : 0;
+  const mt = stats.match_type_counts || {};
   return (
     <div className="anim-bounce-in" style={{
       background: "linear-gradient(135deg,#f0fdf4,#ecfdf5)",
@@ -744,9 +779,9 @@ function SuccessBanner({ show }: { show: boolean }) {
         </div>
         <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
           <span className="retro-text-sm" style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 900, fontSize: 28, display: "inline-block" }}>
-            92.3%
+            {matchRate}%
           </span>
-          <span style={{ fontSize: 13, color: "#059669" }}>matched · 60 records · 5 exceptions · AI confidence: high</span>
+          <span style={{ fontSize: 13, color: "#059669" }}>matched · {stats.total_bank_records} records · {stats.exceptions} exceptions{Object.keys(mt).length > 0 && ( <> · {Object.entries(mt).map(([k,v]) => `${k}: ${v}`).join(", ")}</> )}</span>
         </div>
       </div>
       <div style={{ display: "flex", gap: 4 }}>
@@ -759,11 +794,15 @@ function SuccessBanner({ show }: { show: boolean }) {
 }
 
 // ─── Match Table ──────────────────────────────────────────────────────────────
-function MatchTable({ complete, rowsData }: { complete: boolean, rowsData: MatchRow[] }) {
+function MatchTable({ complete, rowsData }: { complete: boolean; rowsData: MatchRow[] }) {
   const [filter, setFilter] = useState("All");
   const ref = useRef<HTMLDivElement>(null);
   const v = useInView(ref);
-  const rows = filter === "All" ? rowsData : rowsData.filter(r => r.tier === filter);
+  const rows = filter === "All"
+    ? rowsData
+    : ["1:N","N:1","N:M"].includes(filter)
+      ? rowsData.filter(r => r.matchType === filter)
+      : rowsData.filter(r => r.tier === filter);
 
   return (
     <div ref={ref} className={v ? "anim-slide-up" : ""} style={{ opacity: v ? undefined : 0, animationDelay: "0.1s" }}>
@@ -793,7 +832,7 @@ function MatchTable({ complete, rowsData }: { complete: boolean, rowsData: Match
               <span style={{ fontSize: 11, color: "#94a3b8", fontWeight: 500 }}>verified by team</span>
             </div>
           <div style={{ display: "flex", gap: 6 }}>
-            {["All", "Tier 1", "Tier 2", "Tier 3"].map(t => (
+            {["All", "Tier 1", "Tier 2", "Tier 3", "1:N", "N:1", "N:M"].map(t => (
               <button key={t} onClick={() => setFilter(t)} style={{
                 padding: "5px 14px", borderRadius: 20, fontSize: 12, fontWeight: 500,
                 cursor: "pointer", fontFamily: "'Inter',sans-serif", transition: "all 0.2s",
@@ -809,9 +848,9 @@ function MatchTable({ complete, rowsData }: { complete: boolean, rowsData: Match
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead style={{ position: "sticky", top: 0, zIndex: 10, background: "#fafafa", boxShadow: "0 1px 2px rgba(0,0,0,0.02)" }}>
               <tr>
-                {["ID", "Bank Reference", "Ledger Entry", "Amount", "Tier", "Confidence", "Date"].map(h => (
+                {["ID", "Bank Reference", "Ledger Entry", "Type", "Tier", "LLM", "Confidence", "Date"].map(h => (
                   <th key={h} style={{
-                    padding: "10px 22px", textAlign: "left", fontSize: 10,
+                    padding: "10px 16px", textAlign: "left", fontSize: 10,
                     color: "#94a3b8", letterSpacing: "0.08em", fontWeight: 600,
                     fontFamily: "'Inter',sans-serif", borderBottom: "1px solid #f1f5f9",
                   }}>{h.toUpperCase()}</th>
@@ -828,20 +867,49 @@ function MatchTable({ complete, rowsData }: { complete: boolean, rowsData: Match
                   onMouseEnter={e => (e.currentTarget.style.background = "#f8faff")}
                   onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                 >
-                  <td style={{ padding: "14px 22px", fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: "#cbd5e1", fontWeight: 600 }}>{row.id}</td>
-                  <td style={{ padding: "14px 22px", fontSize: 13, color: "#475569" }}>{row.bank}</td>
-                  <td style={{ padding: "14px 22px", fontSize: 13, color: "#475569" }}>{row.ledger}</td>
-                  <td style={{ padding: "14px 22px", fontFamily: "'JetBrains Mono',monospace", fontSize: 13, color: "#0f172a", fontWeight: 700 }}>{row.amount}</td>
-                  <td style={{ padding: "14px 22px" }}>
+                  <td style={{ padding: "12px 16px", fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: "#cbd5e1", fontWeight: 600 }}>{row.id}</td>
+                  <td style={{ padding: "12px 16px", fontSize: 12, color: "#475569" }}>{row.bank}</td>
+                  <td style={{ padding: "12px 16px", fontSize: 12, color: "#475569", maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={row.ledger}>{row.ledger}</td>
+                  {/* Match Type badge */}
+                  <td style={{ padding: "12px 16px" }}>
+                    {(() => {
+                      const mt = MATCH_TYPE_META[row.matchType] || MATCH_TYPE_META["1:1"];
+                      return (
+                        <span style={{
+                          padding: "3px 9px", borderRadius: 20, fontSize: 11, fontWeight: 700,
+                          background: mt.bg, color: mt.color,
+                          border: `1px solid ${mt.color}30`,
+                          fontFamily: "'JetBrains Mono',monospace",
+                        }}>{mt.label}</span>
+                      );
+                    })()}
+                  </td>
+                  {/* Tier badge */}
+                  <td style={{ padding: "12px 16px" }}>
                     <span style={{
                       padding: "4px 12px", borderRadius: 20, fontSize: 11, fontWeight: 600,
-                      background: `${TIER_COLORS[row.tier]}12`,
-                      border: `1px solid ${TIER_COLORS[row.tier]}30`,
-                      color: TIER_COLORS[row.tier],
+                      background: `${TIER_COLORS[row.tier] || "#94a3b8"}12`,
+                      border: `1px solid ${TIER_COLORS[row.tier] || "#94a3b8"}30`,
+                      color: TIER_COLORS[row.tier] || "#94a3b8",
                       fontFamily: "'Inter',sans-serif",
                     }}>{row.tier}</span>
                   </td>
-                  <td style={{ padding: "14px 22px" }}>
+                  {/* LLM Source badge */}
+                  <td style={{ padding: "12px 16px" }}>
+                    {row.llmSource ? (() => {
+                      const lm = LLM_SOURCE_META[row.llmSource];
+                      return lm ? (
+                        <span style={{
+                          padding: "3px 9px", borderRadius: 20, fontSize: 10, fontWeight: 600,
+                          background: lm.bg, color: lm.color,
+                          border: `1px solid ${lm.color}30`,
+                          fontFamily: "'Inter',sans-serif",
+                        }}>{lm.label}</span>
+                      ) : null;
+                    })() : <span style={{ color: "#e2e8f0", fontSize: 11 }}>ΓÇö</span>}
+                  </td>
+                  {/* Confidence bar */}
+                  <td style={{ padding: "12px 16px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <div style={{ flex: 1, height: 2, background: "#e2e8f0", borderRadius: 2, overflow: "hidden", maxWidth: 64 }}>
                         <div style={{
@@ -855,7 +923,7 @@ function MatchTable({ complete, rowsData }: { complete: boolean, rowsData: Match
                       <span style={{ fontSize: 11, color: "#0f172a", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700 }}>{row.confidence}%</span>
                     </div>
                   </td>
-                  <td style={{ padding: "14px 22px", fontSize: 11, color: "#cbd5e1", fontFamily: "'JetBrains Mono',monospace" }}>{row.date}</td>
+                  <td style={{ padding: "12px 16px", fontSize: 11, color: "#cbd5e1", fontFamily: "'JetBrains Mono',monospace" }}>{row.date}</td>
                 </tr>
               ))}
             </tbody>
@@ -913,7 +981,7 @@ function ExceptionsPanel({ complete, excData }: { complete: boolean, excData: Ex
         </div>
         <div style={{ overflowY: "auto", maxHeight: 420 }}>
           {excData.map((exc, i) => {
-            const meta = CODE_META[exc.code];
+            const meta = CODE_META[exc.code] || DEFAULT_CODE_META;
             return (
               <div key={exc.id} style={{
                 padding: "15px 28px", borderBottom: "1px solid #f1f5f9",
@@ -1198,11 +1266,13 @@ function QAChat({ open, onClose }: { open: boolean; onClose: () => void }) {
 }
 
 // ─── App ──────────────────────────────────────────────────────────────────────
-const METRICS = [
-  { label: "MATCH RATE",  value: 92, unit: "%", icon: TrendingUp, color: "#0ea5e9", bg: "#f0f9ff", delay: 0.05 },
-  { label: "PRECISION",   value: 97, unit: "%", icon: Target,     color: "#818cf8", bg: "#eef2ff", delay: 0.12 },
-  { label: "RECALL",      value: 89, unit: "%", icon: Shield,     color: "#f472b6", bg: "#fdf2f8", delay: 0.19 },
-  { label: "F1 SCORE",    value: 93, unit: "%", icon: BarChart3,  color: "#34d399", bg: "#ecfdf5", delay: 0.26 },
+const API_BASE = (import.meta as any).env?.VITE_API_URL || "http://localhost:8000";
+
+const INIT_METRICS = [
+  { label: "MATCH RATE",  value: 0,  unit: "%", icon: TrendingUp, color: "#0ea5e9", bg: "#f0f9ff", delay: 0.05 },
+  { label: "PRECISION",   value: 0,  unit: "%", icon: Target,     color: "#818cf8", bg: "#eef2ff", delay: 0.12 },
+  { label: "RECALL",      value: 0,  unit: "%", icon: Shield,     color: "#f472b6", bg: "#fdf2f8", delay: 0.19 },
+  { label: "F1 SCORE",    value: 0,  unit: "%", icon: BarChart3,  color: "#34d399", bg: "#ecfdf5", delay: 0.26 },
 ];
 
 export default function App() {
@@ -1213,129 +1283,175 @@ export default function App() {
   const [confetti, setConfetti] = useState(false);
   const [activeTab, setActiveTab] = useState("Dashboard");
 
-  const [matchRows, setMatchRows] = useState<MatchRow[]>(MATCH_ROWS);
-  const [exceptions, setExceptions] = useState<ExcRow[]>(EXCEPTIONS);
-  const [chartData, setChartData] = useState(CHART_DATA);
-  const [metrics, setMetrics] = useState(METRICS);
+  const [matchRows, setMatchRows] = useState<MatchRow[]>([]);
+  const [exceptions, setExceptions] = useState<ExcRow[]>([]);
+  const [metrics, setMetrics] = useState(INIT_METRICS);
+  const [liveStats, setLiveStats] = useState<LiveStats | null>(null);
+  const [pipelineError, setPipelineError] = useState<string | null>(null);
 
-    const runPipeline = async () => {
+  // ── helper: build a MatchRow from an SSE "record" event ────────────────────
+  const rowFromEvent = (data: any, idx: number): MatchRow => {
+    const tierNum = data.tier ?? "1";
+    const tierLabel = `Tier ${tierNum}`;
+    const lids: string[] = data.ledger_txn_ids || (data.matched_ledger_id ? [data.matched_ledger_id] : ["?"]);
+    return {
+      id: `M${String(idx).padStart(3, "0")}`,
+      bank: data.bank_txn_id || "?",
+      ledger: lids.join(", "),
+      amount: "—",   // backend doesn't echo amount in stream event
+      tier: tierLabel,
+      matchType: data.match_type || "1:1",
+      confidence: Math.round((data.confidence ?? 0) * 100),
+      llmSource: data.llm_source ?? undefined,
+      date: "—",
+    };
+  };
+
+  const runPipeline = useCallback(async (files?: File[]) => {
     if (running) return;
-    setRunning(true); setComplete(false); setConfetti(false);
+    setRunning(true); setComplete(false); setConfetti(false); setLiveStats(null); setPipelineError(null);
     setStages(STAGES.map(s => ({ ...s, done: false, active: false, count: s.count !== undefined ? 0 : undefined })));
     setMatchRows([]);
     setExceptions([]);
+    setMetrics(INIT_METRICS);
+
+    let rowIdx = 0;
 
     try {
-      const response = await fetch("http://localhost:8000/reconcile/stream", { method: "POST" });
-      if (!response.body) return;
-      
+      const options: RequestInit = { method: "POST" };
+      if (files && files.length === 2) {
+        const formData = new FormData();
+        const bankFile = files.find(f => f.name.toLowerCase().includes("bank")) || files[0];
+        const ledgerFile = files.find(f => f.name !== bankFile.name) || files[1];
+        formData.append("bank_file", bankFile);
+        formData.append("ledger_file", ledgerFile);
+        options.body = formData;
+      } else if (files && files.length === 1) {
+        // Single file — send as combined_file (BenchRec format auto-detected by backend)
+        const formData = new FormData();
+        formData.append("combined_file", files[0]);
+        options.body = formData;
+      }
+
+      const response = await fetch(`${API_BASE}/reconcile/stream`, options);
+      if (!response.ok) {
+        const errData = await response.json().catch(() => null);
+        setPipelineError(errData?.detail?.message || "Pipeline error");
+        setRunning(false);
+        return;
+      }
+      if (!response.body) { setRunning(false); return; }
+
       const reader = response.body.getReader();
       const decoder = new TextDecoder("utf-8");
-      
-      let currentMatches: any[] = [];
-      let currentExceptions: any[] = [];
+      let buf = "";
 
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
-        
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n\n");
-        
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            const dataStr = line.substring(6);
-            if (!dataStr) continue;
-            try {
-              const data = JSON.parse(dataStr);
-              
-              if (data.type === "status") {
-                // Determine stage by step string loosely
-                let activeId = "blocking";
-                if (data.step.includes("Initializing") || data.step.includes("Pre-Filter")) activeId = "blocking";
-                else if (data.step.includes("Scoring")) activeId = "scoring";
-                else activeId = "tier3";
-                
-                setStages(prev => prev.map(s => {
-                   if (s.id === activeId) return { ...s, active: true, done: false };
-                   const activeIdx = STAGES.findIndex(x => x.id === activeId);
-                   const myIdx = STAGES.findIndex(x => x.id === s.id);
-                   return { ...s, active: false, done: myIdx < activeIdx };
-                }));
-              } 
-              else if (data.type === "progress") {
-                // In a real app we'd get the actual records from the stream, 
-                // but since the python streams just counts we will just fake the rows popping in
-                
-                // Advance the pipeline stage based on progress percentage so avatar moves smoothly
-                const pct = data.processed / Math.max(1, data.total);
-                const simIdx = Math.min(4, Math.floor(pct * 5));
-                const activeId = STAGES[simIdx].id;
 
-                setStages(prev => prev.map(s => {
-                  let updated = s;
-                  if (s.id === "tier1") updated = { ...s, count: data.matched };
-                  
-                  const activeIndex = STAGES.findIndex(x => x.id === activeId);
+        buf += decoder.decode(value, { stream: true });
+        const parts = buf.split("\n\n");
+        buf = parts.pop() ?? "";
+
+        for (const part of parts) {
+          if (!part.startsWith("data: ")) continue;
+          const dataStr = part.slice(6).trim();
+          if (!dataStr) continue;
+          try {
+            const data = JSON.parse(dataStr);
+
+            if (data.type === "status") {
+              const step: string = data.step || "";
+              // Map backend status messages → pipeline stage IDs (strict forward order)
+              let activeId = "blocking";
+              if      (step.includes("Blocking"))                    activeId = "blocking";
+              else if (step.includes("Normaliz") || step.includes("Initializ")) activeId = "normalize";
+              else if (step.includes("1:1") || step.includes("Pass 1") || step.includes("Tier")) activeId = "tier1";
+              else if (step.includes("1:N")  || step.includes("Pass 2")) activeId = "tier2";
+              else if (step.includes("N:1")  || step.includes("Pass 3") ||
+                       step.includes("N:M")  || step.includes("Pass 4") ||
+                       step.includes("Scoring"))                     activeId = "tier3";
+
+              setStages(prev => {
+                const activeIndex = STAGES.findIndex(x => x.id === activeId);
+                // Only advance forward — never go backwards
+                const currentActiveIdx = prev.findIndex(s => s.active);
+                const currentDoneCount = prev.filter(s => s.done).length;
+                if (activeIndex < Math.max(currentActiveIdx, currentDoneCount)) return prev;
+                return prev.map(s => {
                   const myIndex = STAGES.findIndex(x => x.id === s.id);
-                  return {
-                    ...updated,
-                    active: s.id === activeId,
-                    done: myIndex < activeIndex
-                  };
-                }));
-              }
-              else if (data.type === "complete") {
-                 // The backend finished!
-                 // The stream only sent counts during progress, so we'll just show the final results now.
-                 // Ideally the stream sends the actual row details, but we will mock the display with the new metrics.
-                 const stats = data.stats;
-                 
-                 // Update metrics
-                 setMetrics([
-                   { label: "MATCH RATE", value: Math.round((stats.matches / stats.total_bank_records)*100), unit: "%", icon: TrendingUp, color: "#0ea5e9", bg: "#f0f9ff", delay: 0.05 },
-                   { label: "PRECISION", value: Math.round(stats.precision * 100), unit: "%", icon: Target, color: "#818cf8", bg: "#eef2ff", delay: 0.12 },
-                   { label: "RECALL", value: Math.round(stats.recall * 100), unit: "%", icon: Shield, color: "#f472b6", bg: "#fdf2f8", delay: 0.19 },
-                   { label: "F1 SCORE", value: Math.round(stats.f1_score * 100), unit: "%", icon: BarChart3, color: "#34d399", bg: "#ecfdf5", delay: 0.26 },
-                 ]);
-                 
-                 // Generate some mock row data based on the counts for visual flair since we didn't send them via SSE for brevity
-                 const genRows = Array.from({length: stats.matches}).map((_, i) => ({
-                    id: `M${String(i).padStart(3, '0')}`,
-                    bank: `TXN-BANK-${i}`,
-                    ledger: `TXN-LEDGER-${i}`,
-                    amount: `$${(Math.random() * 1000).toFixed(2)}`,
-                    tier: i % 5 === 0 ? "Tier 3" : (i % 3 === 0 ? "Tier 2" : "Tier 1"),
-                    confidence: 90 + Math.floor(Math.random() * 10),
-                    date: "2024-12-31"
-                 }));
-                 setMatchRows(genRows);
-                 
-                 const genExc = Array.from({length: stats.exceptions}).map((_, i) => ({
-                    id: `E${String(i).padStart(3, '0')}`,
-                    record: `EXC-BANK-${i}`,
-                    amount: `$${(Math.random() * 500).toFixed(2)}`,
-                    reason: "Failed in pipeline",
-                    code: "NO_MATCH"
-                 }));
-                 setExceptions(genExc);
-                 
-                 setStages(prev => prev.map(s => ({ ...s, active: false, done: true })));
-                 setRunning(false);
-                 setComplete(true);
-                 setConfetti(true);
-              }
-            } catch (e) {
-              console.error(e);
+                  return { ...s, active: s.id === activeId, done: myIndex < activeIndex };
+                });
+              });
             }
+
+            else if (data.type === "counts") {
+              // bank + ledger counts — could show in UI
+            }
+
+            else if (data.type === "record") {
+              // ΓöÇΓöÇ Live match row ΓöÇΓöÇ
+              const row = rowFromEvent(data, rowIdx++);
+              setMatchRows(prev => [...prev, row]);
+
+              // advance stage counts
+              setStages(prev => prev.map(s => {
+                if (s.id === "tier1" && data.tier === "1")  return { ...s, count: (s.count ?? 0) + 1 };
+                if (s.id === "tier2" && data.tier === "2")  return { ...s, count: (s.count ?? 0) + 1 };
+                if (s.id === "tier3" && data.tier === "3")  return { ...s, count: (s.count ?? 0) + 1 };
+                return s;
+              }));
+            }
+
+            else if (data.type === "progress") {
+              // Progress events only update live counts shown in the UI —
+              // stage active/done is exclusively controlled by status events
+              // to prevent the avatar from jumping backwards.
+            }
+
+            else if (data.type === "complete") {
+              const st: LiveStats = data.stats;
+              setLiveStats(st);
+              setMetrics([
+                { label: "MATCH RATE", value: Math.round((st.matches / Math.max(1, st.total_bank_records)) * 100), unit: "%", icon: TrendingUp, color: "#0ea5e9", bg: "#f0f9ff", delay: 0.05 },
+                { label: "PRECISION",  value: Math.round(st.precision * 100),  unit: "%", icon: Target,    color: "#818cf8", bg: "#eef2ff", delay: 0.12 },
+                { label: "RECALL",     value: Math.round(st.recall * 100),     unit: "%", icon: Shield,    color: "#f472b6", bg: "#fdf2f8", delay: 0.19 },
+                { label: "F1 SCORE",   value: Math.round(st.f1_score * 100),   unit: "%", icon: BarChart3, color: "#34d399", bg: "#ecfdf5", delay: 0.26 },
+              ]);
+
+              // populate exceptions from the complete payload
+              if (data.exceptions) {
+                const excRows: ExcRow[] = (data.exceptions as any[]).map((e: any, i: number) => ({
+                  id: `E${String(i).padStart(3, "0")}`,
+                  record: e.bank_txn_id || "?",
+                  amount: "—",
+                  reason: e.detail || e.reason_code || "Pipeline exception",
+                  code: e.reason_code || "UNKNOWN_EXCEPTION",
+                }));
+                setExceptions(excRows);
+              }
+
+              setStages(prev => prev.map(s => ({ ...s, active: false, done: true })));
+              setRunning(false);
+              setComplete(true);
+              setConfetti(true);
+            }
+
+            else if (data.type === "error") {
+              console.error("[SSE error]", data.message);
+              setRunning(false);
+            }
+          } catch (e) {
+            console.error("[SSE parse]", e);
           }
         }
       }
     } catch (e) {
-      console.error(e);
+      console.error("[fetch]", e);
       setRunning(false);
     }
-  };
+  }, [running]);
 
   return (
     <div style={{ minHeight: "100vh", background: "#f0f7ff" }}>
@@ -1347,7 +1463,7 @@ export default function App() {
       {/* Conditionally render Hero only on Dashboard */}
       {activeTab === "Dashboard" && (
         <>
-          <Hero onRun={runPipeline} running={running} />
+          <Hero onRun={runPipeline} running={running} liveStats={liveStats} />
           <WaveDivider />
         </>
       )}
@@ -1356,7 +1472,16 @@ export default function App() {
       <main style={{ padding: "24px 40px 64px", maxWidth: 1440, margin: "0 auto", minHeight: "50vh" }}>
         {activeTab === "Dashboard" ? (
           <>
-            <SuccessBanner show={complete} />
+            {pipelineError && (
+              <div className="anim-bounce-in" style={{
+                background: "#fef2f2", border: "1.5px solid #fecaca", borderRadius: 20,
+                padding: "16px 24px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12,
+                color: "#991b1b", fontFamily: "'Inter',sans-serif", fontSize: 14, fontWeight: 500
+              }}>
+                <AlertTriangle size={18} /> {pipelineError}
+              </div>
+            )}
+            <SuccessBanner show={complete} stats={liveStats} />
             <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 16, marginBottom: 16 }}>
               <UploadZone onRun={runPipeline} running={running} />
               <PipelineProgress stages={stages} />
@@ -1369,7 +1494,13 @@ export default function App() {
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 16 }}>
               <ExceptionsPanel complete={complete} excData={exceptions} />
-              <CategoryChart chartData={chartData} />
+              <CategoryChart chartData={liveStats ? [
+                { name: "Matched (1:1)",  value: liveStats.match_type_counts?.["1:1"] ?? 0,  color: "#0ea5e9" },
+                { name: "Matched (1:N)",  value: liveStats.match_type_counts?.["1:N"] ?? 0,  color: "#818cf8" },
+                { name: "Matched (N:1)",  value: liveStats.match_type_counts?.["N:1"] ?? 0,  color: "#f472b6" },
+                { name: "Matched (N:M)",  value: liveStats.match_type_counts?.["N:M"] ?? 0,  color: "#f59e0b" },
+                { name: "Exceptions",     value: liveStats.exceptions,                        color: "#ef4444" },
+              ].filter(d => d.value > 0) : []} />
             </div>
           </>
         ) : (

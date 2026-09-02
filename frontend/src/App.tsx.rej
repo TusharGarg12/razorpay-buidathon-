@@ -1,0 +1,171 @@
+diff a/frontend/src/App.tsx b/frontend/src/App.tsx	(rejected hunks)
+@@ -45,11 +45,22 @@ function AvatarStack({ seeds, size = 34, overlap = 10 }: { seeds: string[]; size
+ 
+ // ΓöÇΓöÇΓöÇ Types ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ type Stage = { id: string; label: string; emoji: string; done: boolean; active: boolean; count?: number };
+-type MatchRow = { id: string; bank: string; ledger: string; amount: string; tier: string; confidence: number; date: string };
++type MatchRow = {
++  id: string;
++  bank: string;
++  ledger: string;       // comma-joined ledger IDs
++  amount: string;
++  tier: string;         // "Tier 1" | "Tier 2" | "Tier 3"
++  matchType: string;    // "1:1" | "1:N" | "N:1" | "N:M"
++  confidence: number;   // 0-100
++  llmSource?: string;   // "ollama" | "gemini" | "heuristic" | null
++  date: string;
++};
+ type ExcRow = { id: string; record: string; amount: string; reason: string; code: string };
+ type ChatMsg = { role: "user" | "ai"; text: string; ts: string };
++type LiveStats = { matches: number; total_bank_records: number; precision: number; recall: number; f1_score: number; exceptions: number; match_type_counts?: Record<string,number> };
+ 
+-// ΓöÇΓöÇΓöÇ Data ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++// ΓöÇΓöÇΓöÇ Static / initial data ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ const STAGES: Stage[] = [
+   { id: "blocking",  label: "Blocking",     emoji: "≡ƒöì", done: false, active: false },
+   { id: "normalize", label: "Normalize",    emoji: "ΓÜí", done: false, active: false },
+@@ -58,48 +69,38 @@ const STAGES: Stage[] = [
+   { id: "tier3",     label: "AI Match",     emoji: "Γ£¿", done: false, active: false, count: 0 },
+ ];
+ 
+-const MATCH_ROWS: MatchRow[] = [
+-  { id: "M001", bank: "ACH-PAYROLL-2024Q4",  ledger: "Payroll Dec 2024",        amount: "$48,320.00",  tier: "Tier 1", confidence: 99, date: "2024-12-31" },
+-  { id: "M002", bank: "WIRE-VENDOR-ACME",    ledger: "ACME Corp Invoice #1821", amount: "$12,450.00",  tier: "Tier 1", confidence: 97, date: "2024-12-30" },
+-  { id: "M003", bank: "CC-CHG-STRIPE-001",   ledger: "Stripe Processing Fee",   amount: "$3,214.88",   tier: "Tier 2", confidence: 91, date: "2024-12-29" },
+-  { id: "M004", bank: "DEP-CLNT-GLOBEX",     ledger: "Globex Q4 Retainer",      amount: "$25,000.00",  tier: "Tier 1", confidence: 99, date: "2024-12-28" },
+-  { id: "M005", bank: "CHK-0042-UTIL",       ledger: "Office Utilities Nov",    amount: "$1,892.40",   tier: "Tier 2", confidence: 84, date: "2024-12-27" },
+-  { id: "M006", bank: "ACH-SaaS-CLOUD",      ledger: "AWS Infrastructure Jan",  amount: "$7,631.22",   tier: "Tier 3", confidence: 72, date: "2024-12-26" },
+-  { id: "M007", bank: "WIRE-INT-XFER-001",   ledger: "Inter-account Transfer",  amount: "$100,000.00", tier: "Tier 1", confidence: 99, date: "2024-12-25" },
+-  { id: "M008", bank: "CC-REFUND-AMZ-88",    ledger: "Amazon Refund ΓÇö Office",  amount: "$-234.50",    tier: "Tier 2", confidence: 88, date: "2024-12-24" },
+-];
+-
+-const EXCEPTIONS: ExcRow[] = [
+-  { id: "E001", record: "UNKN-DEP-20241218", amount: "$5,421.00",  reason: "No matching ledger entry found",          code: "NO_MATCH"  },
+-  { id: "E002", record: "ACH-PARTIAL-0099",  amount: "$2,100.00",  reason: "Amount mismatch exceeds tolerance (┬▒$50)",code: "AMT_DELTA" },
+-  { id: "E003", record: "WIRE-DUPE-CHECK",   amount: "$18,000.00", reason: "Potential duplicate transaction",         code: "DUPLICATE" },
+-  { id: "E004", record: "DEP-DATE-SLIP-003", amount: "$9,000.00",  reason: "Date mismatch > 5 business days",        code: "DATE_SLIP" },
+-  { id: "E005", record: "CHK-VOID-2024Q4",   amount: "$450.00",    reason: "Voided check ΓÇö ledger still open",       code: "VOID_OPEN" },
+-];
+-
+-const CHART_DATA = [
+-  { name: "Exact Match", value: 28, color: "#38bdf8" },
+-  { name: "Fuzzy Name",  value: 12, color: "#818cf8" },
+-  { name: "Amt Delta",   value: 8,  color: "#fb923c" },
+-  { name: "Date Slip",   value: 5,  color: "#f472b6" },
+-  { name: "Duplicate",   value: 4,  color: "#34d399" },
+-  { name: "Unmatched",   value: 3,  color: "#cbd5e1" },
+-];
+-
+ const TIER_COLORS: Record<string, string> = { "Tier 1": "#0ea5e9", "Tier 2": "#818cf8", "Tier 3": "#f472b6" };
++const MATCH_TYPE_META: Record<string, { color: string; bg: string; label: string }> = {
++  "1:1": { color: "#0ea5e9", bg: "#f0f9ff",  label: "1:1"  },
++  "1:N": { color: "#818cf8", bg: "#eef2ff",  label: "1:N"  },
++  "N:1": { color: "#f472b6", bg: "#fdf2f8",  label: "N:1"  },
++  "N:M": { color: "#f59e0b", bg: "#fffbeb",  label: "N:M"  },
++};
++const LLM_SOURCE_META: Record<string, { color: string; bg: string; label: string }> = {
++  ollama:    { color: "#16a34a", bg: "#f0fdf4",  label: "≡ƒªÖ Ollama"   },
++  gemini:    { color: "#0369a1", bg: "#f0f9ff",  label: "Γ£¿ Gemini"   },
++  heuristic: { color: "#92400e", bg: "#fef9ee",  label: "≡ƒôÉ Heuristic" },
++};
+ const CODE_META: Record<string, { color: string; bg: string; dot: string; emoji: string }> = {
+-  NO_MATCH:  { color: "#64748b", bg: "#f8fafc", dot: "#ef4444", emoji: "Γ¥ô" },
+-  AMT_DELTA: { color: "#92400e", bg: "#fef9ee", dot: "#f59e0b", emoji: "≡ƒÆ░" },
+-  DUPLICATE: { color: "#5b21b6", bg: "#f5f3ff", dot: "#8b5cf6", emoji: "≡ƒöä" },
+-  DATE_SLIP: { color: "#9a3412", bg: "#fff8f5", dot: "#fb923c", emoji: "≡ƒôà" },
+-  VOID_OPEN: { color: "#0369a1", bg: "#f0f9ff", dot: "#38bdf8", emoji: "Γ£ò" },
++  NO_MATCH:              { color: "#64748b", bg: "#f8fafc", dot: "#ef4444", emoji: "Γ¥ô" },
++  NO_CANDIDATE:          { color: "#64748b", bg: "#f8fafc", dot: "#ef4444", emoji: "Γ¥ô" },
++  AMT_DELTA:             { color: "#92400e", bg: "#fef9ee", dot: "#f59e0b", emoji: "≡ƒÆ░" },
++  DUPLICATE:             { color: "#5b21b6", bg: "#f5f3ff", dot: "#8b5cf6", emoji: "≡ƒöä" },
++  DATE_SLIP:             { color: "#9a3412", bg: "#fff8f5", dot: "#fb923c", emoji: "≡ƒôà" },
++  VOID_OPEN:             { color: "#0369a1", bg: "#f0f9ff", dot: "#38bdf8", emoji: "Γ£ò"  },
++  FS_WEIGHT_LOW:         { color: "#0f172a", bg: "#f8fafc", dot: "#94a3b8", emoji: "ΓÜû∩╕Å" },
++  AMBIGUOUS_MULTI:       { color: "#5b21b6", bg: "#f5f3ff", dot: "#8b5cf6", emoji: "≡ƒöÇ" },
++  UNKNOWN_EXCEPTION:     { color: "#64748b", bg: "#f8fafc", dot: "#94a3b8", emoji: "ΓÜá∩╕Å" },
++  LLM_UNRESOLVED:        { color: "#9a3412", bg: "#fff8f5", dot: "#f97316", emoji: "≡ƒñû" },
++  NO_UNCONSUMED_CANDIDATES: { color: "#64748b", bg: "#f8fafc", dot: "#94a3b8", emoji: "≡ƒöÆ" },
+ };
++const DEFAULT_CODE_META = { color: "#64748b", bg: "#f8fafc", dot: "#94a3b8", emoji: "ΓÜá∩╕Å" };
+ 
+ const CANNED: Record<string, string> = {
+-  default:   "Great question! Most exceptions come from timing differences between bank clearance and ledger posting. I'd start with E001 and E003.",
+-  exception: "5 exceptions need attention. E001 has no matching ledger entry ΓÇö possible unrecorded deposit. E003 looks like a duplicate wire transfer.",
+-  match:     "92.3% match rate overall. Tier 1 matched 47 records exactly, Tier 2 caught 9 more with fuzzy logic, and AI resolved 4 tricky ones.",
+-  tier:      "Tier 1 uses exact hash matching. Tier 2 applies fuzzy string similarity (Levenshtein ΓëÑ 0.82). Tier 3 asks the AI to reason about semantic equivalence.",
++  default:   "Most exceptions come from timing differences between bank clearance and ledger posting.",
++  exception: "Check NO_CANDIDATE exceptions first ΓÇö they indicate records with no ledger counterpart.",
++  match:     "Tier 1 handles exact matches, Tier 2 uses Jaro-Winkler + Fellegi-Sunter weights, Tier 3 uses Ollama (Qwen2.5) with Gemini as fallback.",
++  tier:      "Tier 1: exact amount+date. Tier 2: fuzzy JW ΓëÑ 0.85 + FS weight. Tier 3: LLM (Ollama primary, Gemini fallback). 1:N/N:1/N:M group matching runs after 1:1 pass.",
+ };
+ 
+ // ΓöÇΓöÇΓöÇ Hooks ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+@@ -727,8 +728,12 @@ function MetricCard({ label, value, unit, icon: Icon, color, bg, active, delay }
+ }
+ 
+ // ΓöÇΓöÇΓöÇ Success Banner ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+-function SuccessBanner({ show }: { show: boolean }) {
+-  if (!show) return null;
++function SuccessBanner({ show, stats }: { show: boolean; stats: LiveStats | null }) {
++  if (!show || !stats) return null;
++  const matchRate = stats.total_bank_records > 0
++    ? Math.round((stats.matches / stats.total_bank_records) * 100)
++    : 0;
++  const mt = stats.match_type_counts || {};
+   return (
+     <div className="anim-bounce-in" style={{
+       background: "linear-gradient(135deg,#f0fdf4,#ecfdf5)",
+@@ -744,9 +749,14 @@ function SuccessBanner({ show }: { show: boolean }) {
+         </div>
+         <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
+           <span className="retro-text-sm" style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 900, fontSize: 28, display: "inline-block" }}>
+-            92.3%
++            {matchRate}%
++          </span>
++          <span style={{ fontSize: 13, color: "#059669" }}>
++            matched ┬╖ {stats.total_bank_records} records ┬╖ {stats.exceptions} exceptions
++            {Object.keys(mt).length > 0 && (
++              <> ┬╖ {Object.entries(mt).map(([k,v]) => `${k}: ${v}`).join(', ')}</>
++            )}
+           </span>
+-          <span style={{ fontSize: 13, color: "#059669" }}>matched ┬╖ 60 records ┬╖ 5 exceptions ┬╖ AI confidence: high</span>
+         </div>
+       </div>
+       <div style={{ display: "flex", gap: 4 }}>
+@@ -759,11 +769,15 @@ function SuccessBanner({ show }: { show: boolean }) {
+ }
+ 
+ // ΓöÇΓöÇΓöÇ Match Table ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+-function MatchTable({ complete, rowsData }: { complete: boolean, rowsData: MatchRow[] }) {
++function MatchTable({ complete, rowsData }: { complete: boolean; rowsData: MatchRow[] }) {
+   const [filter, setFilter] = useState("All");
+   const ref = useRef<HTMLDivElement>(null);
+   const v = useInView(ref);
+-  const rows = filter === "All" ? rowsData : rowsData.filter(r => r.tier === filter);
++  const rows = filter === "All"
++    ? rowsData
++    : ["1:N","N:1","N:M"].includes(filter)
++      ? rowsData.filter(r => r.matchType === filter)
++      : rowsData.filter(r => r.tier === filter);
+ 
+   return (
+     <div ref={ref} className={v ? "anim-slide-up" : ""} style={{ opacity: v ? undefined : 0, animationDelay: "0.1s" }}>
+@@ -1198,11 +1241,13 @@ function QAChat({ open, onClose }: { open: boolean; onClose: () => void }) {
+ }
+ 
+ // ΓöÇΓöÇΓöÇ App ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+-const METRICS = [
+-  { label: "MATCH RATE",  value: 92, unit: "%", icon: TrendingUp, color: "#0ea5e9", bg: "#f0f9ff", delay: 0.05 },
+-  { label: "PRECISION",   value: 97, unit: "%", icon: Target,     color: "#818cf8", bg: "#eef2ff", delay: 0.12 },
+-  { label: "RECALL",      value: 89, unit: "%", icon: Shield,     color: "#f472b6", bg: "#fdf2f8", delay: 0.19 },
+-  { label: "F1 SCORE",    value: 93, unit: "%", icon: BarChart3,  color: "#34d399", bg: "#ecfdf5", delay: 0.26 },
++const API_BASE = (import.meta as any).env?.VITE_API_URL || "http://localhost:8000";
++
++const INIT_METRICS = [
++  { label: "MATCH RATE",  value: 0,  unit: "%", icon: TrendingUp, color: "#0ea5e9", bg: "#f0f9ff", delay: 0.05 },
++  { label: "PRECISION",   value: 0,  unit: "%", icon: Target,     color: "#818cf8", bg: "#eef2ff", delay: 0.12 },
++  { label: "RECALL",      value: 0,  unit: "%", icon: Shield,     color: "#f472b6", bg: "#fdf2f8", delay: 0.19 },
++  { label: "F1 SCORE",    value: 0,  unit: "%", icon: BarChart3,  color: "#34d399", bg: "#ecfdf5", delay: 0.26 },
+ ];
+ 
+ export default function App() {

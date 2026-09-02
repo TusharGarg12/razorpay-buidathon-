@@ -24,11 +24,11 @@ def load_data(path):
                 data.append(row)
     return data
 
-# MOCK HTTPX TO SPEED UP OFFLINE TESTING
-import httpx
-from unittest.mock import patch
-mock_post = patch('httpx.Client.post', side_effect=httpx.ConnectError("Offline mock"))
-mock_post.start()
+# MOCK HTTPX TO SPEED UP OFFLINE TESTING (Uncomment if Ollama is not running)
+# import httpx
+# from unittest.mock import patch
+# mock_post = patch('httpx.Client.post', side_effect=httpx.ConnectError("Offline mock"))
+# mock_post.start()
 
 def main():
     print("Loading data...")

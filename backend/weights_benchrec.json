@@ -1,4 +1,5 @@
 {
+    "_comment": "Fellegi-Sunter weights learned via 5-fold CV on BenchRec cash dataset (scratch/calc_weights.py). desc weights are 0.0 because description text in BenchRec cash data has near-zero discriminative power — amount and date dominate. Jaro-Winkler on descriptions is still applied at Tier 1 (>=0.85 threshold) independently of these weights.",
     "amt": {
         "agree": 7.61,
         "disagree": -3.68

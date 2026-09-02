@@ -1,5 +1,5 @@
 import os
-from google import genai
+import httpx
 from pydantic import BaseModel
 
 class QAQuery(BaseModel):
@@ -7,30 +7,33 @@ class QAQuery(BaseModel):
     stats_context: str
 
 class QAAgent:
-    def __init__(self):
-        self.api_key = os.getenv("GEMINI_API_KEY")
-        self.client = genai.Client(api_key=self.api_key) if self.api_key else None
+    def __init__(self, ollama_host: str = "http://localhost:11434", ollama_model: str = "qwen2.5:latest"):
+        self.ollama_host = ollama_host
+        self.ollama_model = ollama_model
+        self.client = httpx.Client(timeout=120.0)
 
     def ask(self, query: str, context: str) -> str:
-        if not self.client:
-            return "QA Agent is currently in fallback mode (no API key). I cannot answer questions right now."
-            
-        prompt = f"""
-        You are a highly capable Settlement Q&A assistant for the AI Finance Controller.
-        You have access to the following context regarding the most recent reconciliation run:
-        
-        {context}
-        
-        The user asks: {query}
-        
-        Answer concisely and professionally based on the context. If you don't know, say so.
-        """
-        
+        prompt = f"""You are a highly capable Settlement Q&A assistant for the AI Finance Controller.
+You have access to the following context regarding the most recent reconciliation run:
+
+{context}
+
+The user asks: {query}
+
+Answer concisely and professionally based on the context. If you don't know, say so."""
+
         try:
-            response = self.client.models.generate_content(
-                model='gemini-2.0-flash',
-                contents=prompt
+            resp = self.client.post(
+                f"{self.ollama_host}/api/generate",
+                json={
+                    "model": self.ollama_model,
+                    "prompt": prompt,
+                    "stream": False,
+                },
             )
-            return response.text
+            resp.raise_for_status()
+            return resp.json().get("response", "Sorry, I couldn't generate a response.")
+        except httpx.ConnectError:
+            return "Error connecting to Ollama. Is the Ollama service running on localhost:11434?"
         except Exception as e:
-            return f"Error connecting to Gemini: {str(e)}"
+            return f"Error from Ollama: {str(e)}"

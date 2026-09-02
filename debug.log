@@ -1,0 +1,16 @@
+DEBUG FILE C:\Users\gargt\AppData\Local\Temp\tmp5kq4nty9\bank.csv: 'txn_id,amount,date,desc,party\nb1,100.00,2023-01-01,Test,Test\nb2,200.00,2023-01-02,Test2,Test2\nb3,300.00,2023-01-03,Test3,Test3\n'
+DEBUG ROW C:\Users\gargt\AppData\Local\Temp\tmp5kq4nty9\bank.csv: {'txn_id': 'b1', 'amount': '100.00', 'date': '2023-01-01', 'desc': 'Test', 'party': 'Test'}
+DEBUG ROW C:\Users\gargt\AppData\Local\Temp\tmp5kq4nty9\bank.csv: {'txn_id': 'b2', 'amount': '200.00', 'date': '2023-01-02', 'desc': 'Test2', 'party': 'Test2'}
+DEBUG ROW C:\Users\gargt\AppData\Local\Temp\tmp5kq4nty9\bank.csv: {'txn_id': 'b3', 'amount': '300.00', 'date': '2023-01-03', 'desc': 'Test3', 'party': 'Test3'}
+DEBUG FILE C:\Users\gargt\AppData\Local\Temp\tmp5kq4nty9\ledger.csv: 'txn_id,amount,date,desc,party\nl1,100.00,2023-01-01,Test,Test\nl2,200.00,2023-01-02,Test2,Test2\nl3,300.00,2023-01-03,Test3,Test3\n'
+DEBUG ROW C:\Users\gargt\AppData\Local\Temp\tmp5kq4nty9\ledger.csv: {'txn_id': 'l1', 'amount': '100.00', 'date': '2023-01-01', 'desc': 'Test', 'party': 'Test'}
+DEBUG ROW C:\Users\gargt\AppData\Local\Temp\tmp5kq4nty9\ledger.csv: {'txn_id': 'l2', 'amount': '200.00', 'date': '2023-01-02', 'desc': 'Test2', 'party': 'Test2'}
+DEBUG ROW C:\Users\gargt\AppData\Local\Temp\tmp5kq4nty9\ledger.csv: {'txn_id': 'l3', 'amount': '300.00', 'date': '2023-01-03', 'desc': 'Test3', 'party': 'Test3'}
+DEBUG FILE C:\Users\gargt\AppData\Local\Temp\tmpni5oqbsj\bank.csv: 'txn_id,amount,date,description,party\nb1,100.00,2023-01-01,Test,Test\nb2,200.00,2023-01-02,Test2,Test2\nb3,300.00,2023-01-03,Test3,Test3\n'
+DEBUG ROW C:\Users\gargt\AppData\Local\Temp\tmpni5oqbsj\bank.csv: {'txn_id': 'b1', 'amount': '100.00', 'date': '2023-01-01', 'description': 'Test', 'party': 'Test'}
+DEBUG ROW C:\Users\gargt\AppData\Local\Temp\tmpni5oqbsj\bank.csv: {'txn_id': 'b2', 'amount': '200.00', 'date': '2023-01-02', 'description': 'Test2', 'party': 'Test2'}
+DEBUG ROW C:\Users\gargt\AppData\Local\Temp\tmpni5oqbsj\bank.csv: {'txn_id': 'b3', 'amount': '300.00', 'date': '2023-01-03', 'description': 'Test3', 'party': 'Test3'}
+DEBUG FILE C:\Users\gargt\AppData\Local\Temp\tmpni5oqbsj\ledger.csv: 'txn_id,amount,date,description,party\nl1,100.00,2023-01-01,Test,Test\nl2,200.00,2023-01-02,Test2,Test2\nl3,300.00,2023-01-03,Test3,Test3\n'
+DEBUG ROW C:\Users\gargt\AppData\Local\Temp\tmpni5oqbsj\ledger.csv: {'txn_id': 'l1', 'amount': '100.00', 'date': '2023-01-01', 'description': 'Test', 'party': 'Test'}
+DEBUG ROW C:\Users\gargt\AppData\Local\Temp\tmpni5oqbsj\ledger.csv: {'txn_id': 'l2', 'amount': '200.00', 'date': '2023-01-02', 'description': 'Test2', 'party': 'Test2'}
+DEBUG ROW C:\Users\gargt\AppData\Local\Temp\tmpni5oqbsj\ledger.csv: {'txn_id': 'l3', 'amount': '300.00', 'date': '2023-01-03', 'description': 'Test3', 'party': 'Test3'}

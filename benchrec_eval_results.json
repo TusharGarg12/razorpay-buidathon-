@@ -1,0 +1,30 @@
+{
+  "total_bank": 80879,
+  "total_ledger": 68975,
+  "gt_pairs": 63911,
+  "matches": 65823,
+  "exceptions": 15056,
+  "tp": 58951,
+  "fp": 6872,
+  "fn": 4960,
+  "precision": 0.8956,
+  "recall": 0.9224,
+  "f1_score": 0.9088,
+  "match_rate": 0.8138,
+  "tier_counts": {
+    "T1": 63880,
+    "T2": 1943,
+    "T3": 0
+  },
+  "llm_calls": 200,
+  "clerical_queue": 608,
+  "elapsed_seconds": 833.3,
+  "config": {
+    "limit": null,
+    "llm_sample": 200,
+    "T_upper": 10.0,
+    "T_lower": -2.0,
+    "fee_tol": 0.02,
+    "date_win": 3
+  }
+}

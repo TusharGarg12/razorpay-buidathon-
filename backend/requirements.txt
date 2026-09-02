@@ -7,4 +7,6 @@ scikit-learn
 numpy
 pandas
 python-dotenv
+httpx
 pytest
+python-multipart

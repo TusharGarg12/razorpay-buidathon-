@@ -46,12 +46,15 @@ def test_duplicate_txn_id_in_input_flagged():
         validate_input_data(data, "Bank")
 
 def test_match_and_exception_sets_are_complete_and_disjoint():
-    from backend.scorer import PipelineScorer
+    from scorer import PipelineScorer  # tests run from backend/ dir, no 'backend.' prefix
     scorer = PipelineScorer()
-    matched_pairs = [("B1", "L1"), ("B2", "L2")]
+    # scorer.score() expects list-of-dicts, not tuples
+    matched_pairs = [
+        {"bank_txn_id": "B1", "ledger_txn_ids": ["L1"], "match_type": "1:1"},
+        {"bank_txn_id": "B2", "ledger_txn_ids": ["L2"], "match_type": "1:1"},
+    ]
     exceptions = [{"bank_txn_id": "B3", "reason_code": "NO_CANDIDATE"}]
     total = 3
-    # Just running score to trigger the warning if broken
     stats = scorer.score(matched_pairs, exceptions, total, 3)
     assert stats.matches == 2
     assert stats.exceptions == 1

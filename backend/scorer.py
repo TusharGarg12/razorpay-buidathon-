@@ -1,47 +1,84 @@
 import csv
+import os
 from typing import List, Dict, Any
 from models import ReconciliationStats
 
+# Default ground truth file resolved relative to this source file so the path
+# works regardless of the working directory uvicorn is started from.
+_DEFAULT_GT = os.path.join(os.path.dirname(__file__), "data", "ground_truth.csv")
+
 class PipelineScorer:
-    def __init__(self, ground_truth_file: str = "backend/data/ground_truth.csv"):
-        self.ground_truth = {}
+    def __init__(self, ground_truth_file: str = _DEFAULT_GT):
+        # ground_truth: bank_txn_id → list of valid ledger_txn_ids (supports 1:N / N:M)
+        self.ground_truth: Dict[str, List[str]] = {}
         try:
             with open(ground_truth_file, mode='r', encoding='utf-8') as f:
                 reader = csv.DictReader(f)
                 for row in reader:
-                    self.ground_truth[row['bank_txn_id']] = row['ledger_txn_id']
+                    bid = row['bank_txn_id']
+                    lid = row['ledger_txn_id']
+                    if bid not in self.ground_truth:
+                        self.ground_truth[bid] = []
+                    self.ground_truth[bid].append(lid)
         except Exception:
             pass
 
-    def score(self, matched_pairs: List[tuple], exceptions: List[Dict[str, Any]], total_bank: int, total_ledger: int) -> ReconciliationStats:
+    def score(
+        self,
+        matched_pairs: List[Dict[str, Any]],
+        exceptions: List[Dict[str, Any]],
+        total_bank: int,
+        total_ledger: int,
+    ) -> ReconciliationStats:
         tp = 0
         fp = 0
-        
-        # 1. Invariant check: Match + Exception == Total
-        if len(matched_pairs) + len(exceptions) != total_bank:
-            print(f"WARNING: Pipeline invariant broken! Matches ({len(matched_pairs)}) + Exceptions ({len(exceptions)}) != Total Bank Records ({total_bank}).")
-            
-        for b_id, l_id in matched_pairs:
-            if b_id in self.ground_truth:
-                if self.ground_truth[b_id] == l_id:
+        match_type_counts: Dict[str, int] = {}
+
+        # Invariant check
+        bank_ids_in_matches = {p['bank_txn_id'] for p in matched_pairs}
+        bank_ids_in_exceptions = {e['bank_txn_id'] for e in exceptions}
+        if len(bank_ids_in_matches | bank_ids_in_exceptions) != total_bank:
+            print(
+                f"WARNING: Pipeline invariant broken! "
+                f"Matched ({len(bank_ids_in_matches)}) + Exceptions ({len(bank_ids_in_exceptions)}) "
+                f"!= Total Bank Records ({total_bank})."
+            )
+
+        for pair in matched_pairs:
+            bid = pair['bank_txn_id']
+            # ledger_txn_ids is the new field; fall back to legacy matched_ledger_id
+            matched_lids = pair.get('ledger_txn_ids') or [pair.get('matched_ledger_id')]
+            matched_lids = [l for l in matched_lids if l]
+
+            mt = pair.get('match_type', '1:1')
+            match_type_counts[mt] = match_type_counts.get(mt, 0) + 1
+
+            if bid in self.ground_truth:
+                gt_lids = set(self.ground_truth[bid])
+                # TP: at least one of our matched ledger IDs is in ground truth
+                if any(lid in gt_lids for lid in matched_lids):
                     tp += 1
                 else:
                     fp += 1
             else:
                 fp += 1
-                
-        # False negatives: present in ground truth, but not in our matched_pairs
-        fn = len(self.ground_truth) - tp
-        
+
+        # FN: bank records in ground truth that we didn't match correctly
+        matched_bank_ids = {p['bank_txn_id'] for p in matched_pairs if
+                            any((lid in self.ground_truth.get(p['bank_txn_id'], [])) 
+                                for lid in (p.get('ledger_txn_ids') or [p.get('matched_ledger_id')])
+                                if lid)}
+        fn = len(self.ground_truth) - len(matched_bank_ids & set(self.ground_truth.keys()))
+
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
         recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
         f1 = (2 * precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
-        
-        # 2. Check uncategorized exceptions and patch them
+
+        # Patch uncategorized exceptions
         for exc in exceptions:
             if not exc.get("reason_code"):
                 exc["reason_code"] = "UNKNOWN_EXCEPTION"
-        
+
         return ReconciliationStats(
             total_bank_records=total_bank,
             total_ledger_records=total_ledger,
@@ -52,5 +89,6 @@ class PipelineScorer:
             fn=fn,
             precision=precision,
             recall=recall,
-            f1_score=f1
+            f1_score=f1,
+            match_type_counts=match_type_counts,
         )

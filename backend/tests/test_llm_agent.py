@@ -8,6 +8,10 @@ from llm_agent import OllamaAgent
 import httpx
 import config
 
+@pytest.fixture(autouse=True)
+def disable_gemini(monkeypatch):
+    monkeypatch.setattr("llm_agent._gemini_is_blocked", lambda: True)
+
 @patch("llm_agent.httpx.Client")
 def test_ollama_agent_malformed_json(mock_client_class):
     """

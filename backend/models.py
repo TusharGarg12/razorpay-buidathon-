@@ -19,12 +19,16 @@ class LedgerRecord(BaseModel):
 
 class MatchResult(BaseModel):
     decision: Literal["match", "unresolved"]
-    matched_ledger_id: Optional[str] = None
+    matched_ledger_id: Optional[str] = None          # primary (1:1) or representative (1:N)
+    matched_ledger_ids: Optional[List[str]] = None    # all ledger IDs in a group match
+    matched_bank_ids: Optional[List[str]] = None      # all bank IDs for N:1 / N:M
+    match_type: Optional[str] = "1:1"                 # "1:1" | "1:N" | "N:1" | "N:M"
     reason: Optional[str] = None
     confidence: float = Field(ge=0.0, le=1.0)
     is_fallback: bool = False
     llm_called: bool = False
-    
+    llm_source: Optional[str] = None                  # "ollama" | "gemini" | "heuristic"
+
 class ExceptionRecord(BaseModel):
     bank_txn_id: str
     reason_code: str
@@ -45,3 +49,4 @@ class ReconciliationStats(BaseModel):
     precision: float
     recall: float
     f1_score: float
+    match_type_counts: Optional[Dict[str, int]] = None   # {"1:1": 22, "1:N": 3, ...}
