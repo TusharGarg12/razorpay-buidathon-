@@ -3,9 +3,14 @@ import os
 from typing import List, Dict, Any
 from models import ReconciliationStats
 
-# Default ground truth file resolved relative to this source file so the path
-# works regardless of the working directory uvicorn is started from.
-_DEFAULT_GT = os.path.join(os.path.dirname(__file__), "..", "data", "ground_truth.csv")
+# Check multiple possible locations for ground truth
+# 1. Local development (../data)
+# 2. Docker container (/app/data)
+_POSSIBLE_GTS = [
+    os.path.join(os.path.dirname(__file__), "..", "data", "ground_truth.csv"),
+    os.path.join(os.path.dirname(__file__), "data", "ground_truth.csv"),
+]
+_DEFAULT_GT = next((p for p in _POSSIBLE_GTS if os.path.exists(p)), _POSSIBLE_GTS[0])
 
 class PipelineScorer:
     def __init__(self, ground_truth_file: str = _DEFAULT_GT):
