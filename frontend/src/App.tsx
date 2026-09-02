@@ -1109,9 +1109,7 @@ function TypingDots() {
 }
 
 function QAChat({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const [msgs, setMsgs] = useState<ChatMsg[]>([{
-    role: "ai", text: "Hi! 👋 I've analyzed your reconciliation run. 5 exceptions need attention — want me to walk you through them?", ts: "09:41",
-  }]);
+  const [msgs, setMsgs] = useState<ChatMsg[]>([]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
