@@ -221,7 +221,8 @@ async def reconcile_stream(
                         "llm_source":    pair["llm_source"],
                         "reason":        res.reason,
                     })
-                    # Don't add to exceptions yet — may still be resolved in group passes
+                else:
+                    # Save the reason for exceptions (if it remains unmatched after all group passes)
                     unresolved_reasons[bid] = res.reason
 
                 yield sse({
