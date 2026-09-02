@@ -186,6 +186,7 @@ async def reconcile_stream(
             reconciler = Reconciler()
             matched_pairs_raw = []
             exceptions_raw    = []
+            unresolved_reasons = {}
             total = len(bank_data)
 
             for i, b_rec in enumerate(bank_data):
@@ -220,9 +221,8 @@ async def reconcile_stream(
                         "llm_source":    pair["llm_source"],
                         "reason":        res.reason,
                     })
-                else:
                     # Don't add to exceptions yet — may still be resolved in group passes
-                    pass
+                    unresolved_reasons[bid] = res.reason
 
                 yield sse({
                     "type":       "progress",
@@ -316,10 +316,22 @@ async def reconcile_stream(
             for bank in bank_data:
                 bid = bank["txn_id"]
                 if bid not in reconciler.consumed_bank_ids:
+                    reason = unresolved_reasons.get(bid) or "NO_CANDIDATE"
+                    if reason == "NO_CANDIDATE":
+                        detail = "No matching ledger record found after all passes"
+                    elif reason == "AMBIGUOUS_MULTI":
+                        detail = "Multiple exact matches found, requiring human review"
+                    elif reason == "LLM_UNRESOLVED":
+                        detail = "AI reviewed but could not confidently match"
+                    elif reason == "FS_WEIGHT_LOW":
+                        detail = "Candidate similarity too low for AI review"
+                    else:
+                        detail = "Failed to match after AI reasoning"
+                        
                     exceptions_raw.append({
                         "bank_txn_id": bid,
-                        "reason_code": "NO_CANDIDATE",
-                        "detail":      "No matching ledger record found after all passes",
+                        "reason_code": reason,
+                        "detail": detail,
                     })
 
             # ── Score ──────────────────────────────────────────────────────────────
