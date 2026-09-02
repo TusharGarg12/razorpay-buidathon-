@@ -52,10 +52,10 @@ class LLMAgent:
 
     def __init__(
         self,
-        ollama_host: str = "http://localhost:11434",
+        ollama_host: str = None,
         ollama_model: str = "qwen2.5:latest",
     ):
-        self.ollama_host = ollama_host
+        self.ollama_host = ollama_host or os.getenv("OLLAMA_HOST", "http://localhost:11434")
         self.ollama_model = ollama_model
         self.client = httpx.Client(timeout=120.0)
 
