@@ -13,13 +13,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better cache utilization
-COPY requirements.txt .
+COPY backend/requirements.txt .
 
 # Install python dependencies
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code
-COPY . .
+# Copy the rest of the application code from backend folder
+COPY backend/ .
 
 # Expose port and run (Railway sets $PORT)
 CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}
