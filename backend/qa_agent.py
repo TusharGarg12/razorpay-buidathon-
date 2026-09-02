@@ -46,7 +46,7 @@ Answer concisely and professionally based on the context. If you don't know, say
             if self.gemini_client:
                 try:
                     response = self.gemini_client.models.generate_content(
-                        model="gemini-2.5-flash",
+                        model="gemini-3.6-flash",
                         contents=prompt,
                     )
                     return response.text
